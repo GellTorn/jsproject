@@ -1,5 +1,5 @@
 class Scene {
-    constructor(config){
+    constructor(config = {}){
         // ссылка на объект игры
         this.game = config.game || null;
 
@@ -65,6 +65,8 @@ class Scene {
                 this.updateList.push(camera);
             }
         }
+        
+        return this;
     }
 
     set paused(value) {

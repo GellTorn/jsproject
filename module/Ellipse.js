@@ -1,5 +1,5 @@
-class Ellipse extends Entity {
-    constructor(config) {
+class Ellipse extends Rectangle {
+    constructor(config = {}) {
         super(config);
 
         this.drawingType = config.drawingType || 'fill';
@@ -7,27 +7,22 @@ class Ellipse extends Entity {
         this.name = this.name || 'Ellipse';
         // любой объект цвета или текстуры
         this.color = config.color || '#000';
-        // изображение объекта
-        this.image = document.createElement('canvas');
-        this.image.width = this.width;
-        this.image.height = this.height;
-        this.ctx = this.image.getContext('2d');
-        // ставим флаг на отрисовку
-        this.redraw = true;
+        
     }
     
-    draw() {
-        this.ctx.save();
-        this.ctx.fillStyle = this.color;
-        this.ctx.strokeStyle = this.color;
-        this.ctx.ellipse(this.width / 2, this.height / 2, this.width / 2, this.height / 2, 0, 0, Math.PI * 2);
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = this.color;
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.width / 2, this.height / 2, 0, 0, Math.PI * 2);
         if(this.drawingType == 'fill') {
-            this.ctx.fill();
+            ctx.fill();
         }
         else if(this.drawingType == 'stroke') {
-            this.ctx.stroke();
+            ctx.stroke();
         }
-        this.ctx.restore();
-        this.redraw = false;
+        ctx.restore();
     }
 };

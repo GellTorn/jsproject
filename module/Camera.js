@@ -1,19 +1,27 @@
 class Camera{
-    constructor(config) {
+    constructor(config = {}) {
         // ссылка на сцену которой пренадлежит сущность
         this.scene = config.scene || null;
 
         this.x = config.x || 0;
         this.y = config.y || 0;
+
         // скорость
-        // this.vX = config.vX || 0;
-        // this.vY = config.vY || 0;
-        // // ускорение
-        // this.aX = config.aX || 0;
-        // this.aY = config.aY || 0;
+        this.vX = config.vX || 0;
+        this.vY = config.vY || 0;
+
+        this.vA = config.vA || 0;
+
+        // ускорение
+        this.aX = config.aX || 0;
+        this.aY = config.aY || 0;
+
         // размеры
         this.width = config.width || 0;
         this.height = config.height || 0;
+
+        // угол поворота
+        this._angle = config.angle || 0;
 
         // функция обновления объекта
         this.update = config.update || function(){};
@@ -39,24 +47,34 @@ class Camera{
 
         // обновлять ли объект
         this.active = config.active || false;
+
+        // применять ли физику к объекту
+        this.physics = config.physics || false;
+        
         // объект за которым следует камера
         this.follow = config.follow || null;
+
         // зум, больше - крупнее
 		this.zoom = config.zoom || 1;
-        this.dz = 0;
-        // изменение высоты и ширины
-		this.dw = 0;
-		this.dh = 0;
+   
         // список объектов на рендер
         this.displayList = [];
 	}
 
-    viewportPointToWorld(point) {
-		const res = {
-			x: this.x + point.x,
-			y: this.x + point.y,
-		};
-		return res;
+    set angle(value) {
+        const max = Math.PI * 2;
+        if(value > max){
+            value -= max;
+        }
+        else if(value < -max){
+            value += max;
+        }
+        this._angle = Math.round(value * 1000) / 1000;
+        return this;
+    }
+
+    get angle() {
+        return this._angle;
     }
 
 	pointInRect(point, rect) {
@@ -79,14 +97,22 @@ class Camera{
 			return false;
 		}
 		return true;
-	}
+    }
+    
+    getMouseCoordinates() {
+        return {
+            x: -(this.scene.game.mouse.x - this.x - this.width / 2),
+            y: -(this.scene.game.mouse.y - this.y - this.height / 2),
+        };
+    }
 
     render() {
         // если следуем за каким-то объектом, определяем координаты камеры
         if(this.follow) {
-            this.x = Math.round(this.follow.x - this.follow.width * this.follow.anchor[0]);
-            this.y = Math.round(this.follow.y - this.follow.height * this.follow.anchor[1]);
+            this.x = this.follow.x;
+            this.y = this.follow.y;
         }
+
         // создаем лист отрисовки
         this.displayList = [];
         for(let obj of this.scene.objects) {
@@ -97,24 +123,27 @@ class Camera{
                 this.displayList.push(obj);
             }
         }
+        // сортируем по z индексу
+        this.displayList.sort((a, b) => {
+            return a.z - b.z;
+        });
+
         // отрисовываем объекты
         for(let obj of this.displayList) {
-            if(obj.redraw) {
-                obj.draw();
-            }
-
             let x = obj._x;
             let y = obj._y;
             let w = obj.width;
             let h = obj.height;
-            let anc = obj.anchor;
             let ang = obj.angle;
-			let img = obj.image;
+            let img = obj.image;
+            
             let z = this.zoom;
 
             this.ctx.save();
             
             this.ctx.translate(this.width / 2, this.height / 2);
+
+            this.ctx.rotate(-this.angle);
 
             this.ctx.scale(z, z);
 
@@ -122,7 +151,7 @@ class Camera{
 
             this.ctx.rotate(ang);
 
-            this.ctx.drawImage(img, 0, 0, img.width, img.height, -w * anc[0], -h * anc[1], w, h);
+            obj.draw(this.ctx);
 
             if(this.scene.game.debug) {
                 this.ctx.strokeStyle = 'red';
@@ -143,6 +172,7 @@ class Camera{
         if(this.scene.game.debug) {
             this.ctx.fillStyle = 'rgba(255, 0, 0, 1)';
             this.ctx.fillRect(this.width / 2 - 1, this.height / 2 - 1, 2, 2);
+            this.ctx.fillRect(2, this.height / 4, 2, this.height / 4 * 3);
         }
     }
 }

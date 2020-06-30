@@ -1,27 +1,19 @@
-class Text extends Entity {
-    constructor(config) {
+class Text extends Rectangle {
+    constructor(config = {}) {
         super(config);
 
-        this.name = this.name || 'Text';
+        this.name = 'Text';
         // любой объект цвета или текстуры
         this.color = config.color || '#000';
-        
+
+        this.drawingType = config.drawingType || 'stroke';
+
         this._text = config.text || '';
         this.font = config.font || `${this.height}px sans-serif`;
-        //this.width = this.ctx.measureText(this.text).width;
-
-        // изображение объекта
-        this.image = document.createElement('canvas');
-        this.image.width = this.width;
-        this.image.height = this.height;
-        this.ctx = this.image.getContext('2d');
-        // ставим флаг на отрисовку
-        this.redraw = true;
     }
 
     set text(value) {
         this._text = value;
-        this.redraw = true;
         return this;
     }
 
@@ -29,14 +21,21 @@ class Text extends Entity {
         return this._text;
     }
 
-    draw() {
-        this.ctx.save();
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        this.ctx.fillStyle = this.color;
-        this.ctx.textAlign = 'left';
-        this.ctx.font = this.font;
-        this.ctx.fillText(this.text, 0, this.height);
-        this.ctx.restore();
-        this.redraw = false;
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.textAlign = 'left';
+        ctx.font = this.font;
+
+        let w = ctx.measureText(this.text).width;
+
+        if(this.drawingType == 'fill') {
+            ctx.fillText(this.text, -w / 2, this.height / 2);
+        }
+        else if(this.drawingType == 'stroke') {
+            ctx.strokeText(this.text, -w / 2, this.height / 2);
+        }
+        
+        ctx.restore();
     }
 };
