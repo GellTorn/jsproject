@@ -1,0 +1,22 @@
+{
+  "name": "jsproject",
+  "version": "0.0.1",
+  "description": "game framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GellTorn/jsproject.git"
+  },
+  "author": "GellTorn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GellTorn/jsproject/issues"
+  },
+  "homepage": "https://github.com/GellTorn/jsproject#readme",
+  "dependencies": {
+    "typescript": "^3.9.5"
+  }
+}
