@@ -225,30 +225,33 @@ export default class Game {
     this.frameAmount = 0;
   }
 
-  loadImage(imageId, source) {
-    let image: any = new Image();
-    this.resources[imageId] = image;
+  loadImage(resourceId: string, source: string) {
+    let image = new Image();
+    this.resources[resourceId] = {
+      resource: image,
+      loaded: false,
+    };
     image.src = source;
-    image.loaded = false;
-    image.onload = function () {
-      image.loaded = true;
+    image.onload = () => {
+      this.resources[resourceId].loaded = true;
     };
     image.onload.bind(this);
 
     return this;
   }
 
-  loadVideo(videoId, source) {
-    // TODO
-    let video: any = document.createElement('video');
+  loadVideo(resourceId: string, source: string) {
+    let video = document.createElement('video');
     video.muted = true;
     video.loop = true;
 
-    this.resources[videoId] = video;
+    this.resources[resourceId] = {
+      resource: video,
+      loaded: false,
+    };
     video.src = source;
-    video.loaded = false;
-    video.onload = function () {
-      video.loaded = true;
+    video.onload = () => {
+      this.resources[resourceId].loaded = true;
       video.play();
     };
     video.onload.bind(this);
@@ -256,21 +259,21 @@ export default class Game {
     return this;
   }
 
-  getResource(resourceId) {
-    return this.resources[resourceId];
+  getResource(resourceId: string) {
+    return this.resources[resourceId].resource;
   }
 
   _preloadDone() {
-    for (let image of this.resources) {
-      if (!image.loaded) {
+    for(let resource in this.resources) {
+      if (!this.resources[resource].loaded) {
         console.log('not ready');
         return false;
       }
     }
     clearInterval(this._preloadDoneInterval);
-    // 
+    
     this.create();
-    //
+
     console.info(`Game engine v${this.version}`);
     // запускаем отрисовку
     window.requestAnimationFrame(this.update.bind(this));
