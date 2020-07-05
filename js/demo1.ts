@@ -188,7 +188,7 @@ const create = function () {
     update(time, ticks) {
       let shot = () => {
         this.scene.createEntity(new Circle({
-          position: new Vector2(this.x, this.y),
+          position: new Vector2(this.position.x, this.position.y),
           acceleration: new Vector2(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
           radius: 4,
           color: 'black',
