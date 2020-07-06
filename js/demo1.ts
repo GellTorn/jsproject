@@ -44,14 +44,8 @@ const create = function () {
     angle: 0,
     active: true,
     data: {
-      point1: {
-        x: -400,
-        y: 400,
-      },
-      point2: {
-        x: 400,
-        y: 400,
-      },
+      point1: new Vector2(-400, 400),
+      point2: new Vector2(400, 400),
       speed: 4,
       forward: true,
     },
@@ -64,13 +58,13 @@ const create = function () {
       if (this.data.forward) {
 
         this.position.x += this.data.speed;
-        if (this.distance(this.data.point2) <= 0) {
+        if (this.position.distance(this.data.point2) <= 0) {
           this.data.forward = false;
         }
       }
       else {
         this.position.x -= this.data.speed;
-        if (this.distance(this.data.point1) <= 0) {
+        if (this.position.distance(this.data.point1) <= 0) {
           this.data.forward = true;
         }
       }
@@ -85,7 +79,7 @@ const create = function () {
     active: true,
     physics: true,
     update(time, ticks) {
-      // this.aA = -0.005;
+      this.angle += -0.1;
     }
   }));
 
@@ -166,7 +160,7 @@ const create = function () {
     active: true,
     physics: true,
     update(time, ticks) {
-      // this.aA = 0.005;
+      this.angle += 0.1;
     }
   }));
 

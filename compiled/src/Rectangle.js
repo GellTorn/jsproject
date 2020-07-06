@@ -27,10 +27,13 @@ class Rectangle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area(rect) {
+        return rect.size.x * rect.size.y;
+    }
     intersectPoint(point) {
         const hw = this.size.x / 2;
         const hh = this.size.y / 2;
-        const dist = this.distance(point);
+        const dist = this.position.distance(point);
         const res = {
             x: Math.cos(this.angle) * dist,
             y: Math.sin(this.angle) * dist,

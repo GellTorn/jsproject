@@ -35,16 +35,10 @@ class Entity {
     draw(ctx) {
     }
     offscreen(camera) {
-        if (this.distance(camera.position) > 2000) {
+        if (this.position.distance(camera.position) > 2000) {
             return false;
         }
         return true;
-    }
-    distance(position) {
-        const dx = this.position.x - position.x;
-        const dy = this.position.y - position.y;
-        const res = Math.sqrt(dx * dx + dy * dy);
-        return res;
     }
     applyForce(x, y) {
         this.acceleration.x += x / this.mass;

@@ -33,4 +33,24 @@ export default class Ellipse extends Rectangle {
     }
     ctx.restore();
   }
+  /** Returns the minor radius of the ellipse. Also known as the Semi Minor Axis. */
+  getMinorRadius(): number {
+    return Math.min(this.size.x, this.size.y) / 2;
+  }
+  /** Returns the major radius of the ellipse. Also known as the Semi Major Axis. */
+  getMajorRadius(): number {
+    return Math.max(this.size.x, this.size.y) / 2;
+  }
+  /** Checks to see if the Ellipse is empty: has a width or height equal to zero. */
+  isEmpty(): boolean {
+    return (this.size.x <= 0 || this.size.y <= 0);
+  }
+  /** Calculates the area of the Ellipse. */
+  area(): number {
+    if (this.isEmpty()) {
+        return 0;
+    }
+
+    return (this.getMajorRadius() * this.getMinorRadius() * Math.PI);
+  }
 };

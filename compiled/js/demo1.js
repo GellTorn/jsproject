@@ -41,27 +41,21 @@ const create = function () {
         angle: 0,
         active: true,
         data: {
-            point1: {
-                x: -400,
-                y: 400,
-            },
-            point2: {
-                x: 400,
-                y: 400,
-            },
+            point1: new Vector2_1.default(-400, 400),
+            point2: new Vector2_1.default(400, 400),
             speed: 4,
             forward: true,
         },
         update(time, ticks) {
             if (this.data.forward) {
                 this.position.x += this.data.speed;
-                if (this.distance(this.data.point2) <= 0) {
+                if (this.position.distance(this.data.point2) <= 0) {
                     this.data.forward = false;
                 }
             }
             else {
                 this.position.x -= this.data.speed;
-                if (this.distance(this.data.point1) <= 0) {
+                if (this.position.distance(this.data.point1) <= 0) {
                     this.data.forward = true;
                 }
             }
@@ -75,6 +69,7 @@ const create = function () {
         active: true,
         physics: true,
         update(time, ticks) {
+            this.angle += -0.1;
         }
     }));
     let text = scene.createEntity(new Text_1.default({
@@ -150,6 +145,7 @@ const create = function () {
         active: true,
         physics: true,
         update(time, ticks) {
+            this.angle += 0.1;
         }
     }));
     let player = scene.createEntity(new Circle_1.default({
@@ -371,11 +367,14 @@ class Circle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area() {
+        return (this.radius > 0) ? Math.PI * this.radius * this.radius : 0;
+    }
     intersectCircle(circle) {
-        return this.distance(circle) < this.radius + circle.radius;
+        return this.position.distance(circle.position) < this.radius + circle.radius;
     }
     intersectPoint(point) {
-        return this.distance(point) < this.radius;
+        return this.position.distance(point) < this.radius;
     }
 }
 exports.default = Circle;
@@ -408,6 +407,21 @@ class Ellipse extends Rectangle_1.default {
             ctx.stroke();
         }
         ctx.restore();
+    }
+    getMinorRadius() {
+        return Math.min(this.size.x, this.size.y) / 2;
+    }
+    getMajorRadius() {
+        return Math.max(this.size.x, this.size.y) / 2;
+    }
+    isEmpty() {
+        return (this.size.x <= 0 || this.size.y <= 0);
+    }
+    area() {
+        if (this.isEmpty()) {
+            return 0;
+        }
+        return (this.getMajorRadius() * this.getMinorRadius() * Math.PI);
     }
 }
 exports.default = Ellipse;
@@ -451,16 +465,10 @@ class Entity {
     draw(ctx) {
     }
     offscreen(camera) {
-        if (this.distance(camera.position) > 2000) {
+        if (this.position.distance(camera.position) > 2000) {
             return false;
         }
         return true;
-    }
-    distance(position) {
-        const dx = this.position.x - position.x;
-        const dy = this.position.y - position.y;
-        const res = Math.sqrt(dx * dx + dy * dy);
-        return res;
     }
     applyForce(x, y) {
         this.acceleration.x += x / this.mass;
@@ -669,14 +677,14 @@ class Game {
             this.ctx.fillStyle = '#000';
             this.ctx.fillText(`${this.fps} fps`, 2, 10);
             this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
-            let mouse = this.scene.cameras[0].getMouseCoordinates();
+            const mouse = this.scene.cameras[0].getMouseCoordinates();
             this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Event(${this.events})`, 2, 40);
             this.ctx.fillText(`mouseObjects(${this.mouseObjects.map((item) => item.name)})`, 2, 50);
             this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
-            let x = 60;
+            let offsetX = 60;
             for (let obj of this.scene.objects) {
-                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, x);
-                x += 10;
+                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
+                offsetX += 10;
             }
         }
         this.frameAmount++;
@@ -758,10 +766,13 @@ class Rectangle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area(rect) {
+        return rect.size.x * rect.size.y;
+    }
     intersectPoint(point) {
         const hw = this.size.x / 2;
         const hh = this.size.y / 2;
-        const dist = this.distance(point);
+        const dist = this.position.distance(point);
         const res = {
             x: Math.cos(this.angle) * dist,
             y: Math.sin(this.angle) * dist,

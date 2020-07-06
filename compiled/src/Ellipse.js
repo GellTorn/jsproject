@@ -25,6 +25,21 @@ class Ellipse extends Rectangle_1.default {
         }
         ctx.restore();
     }
+    getMinorRadius() {
+        return Math.min(this.size.x, this.size.y) / 2;
+    }
+    getMajorRadius() {
+        return Math.max(this.size.x, this.size.y) / 2;
+    }
+    isEmpty() {
+        return (this.size.x <= 0 || this.size.y <= 0);
+    }
+    area() {
+        if (this.isEmpty()) {
+            return 0;
+        }
+        return (this.getMajorRadius() * this.getMinorRadius() * Math.PI);
+    }
 }
 exports.default = Ellipse;
 ;

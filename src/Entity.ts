@@ -76,20 +76,13 @@ export default class Entity {
   }
 
   offscreen(camera) {
-    if (this.distance(camera.position) > 2000) {
+    if (this.position.distance(camera.position) > 2000) {
       return false;
     }
     return true;
   }
 
-  distance(position: Vector2) {
-    const dx = this.position.x - position.x;
-    const dy = this.position.y - position.y;
-    const res = Math.sqrt(dx * dx + dy * dy);
-    return res;
-  }
-
-  applyForce(x: number, y: number) {
+  applyForce(x: number, y: number): Entity {
     this.acceleration.x += x / this.mass;
     this.acceleration.y += y / this.mass;
 

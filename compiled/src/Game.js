@@ -196,14 +196,14 @@ class Game {
             this.ctx.fillStyle = '#000';
             this.ctx.fillText(`${this.fps} fps`, 2, 10);
             this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
-            let mouse = this.scene.cameras[0].getMouseCoordinates();
+            const mouse = this.scene.cameras[0].getMouseCoordinates();
             this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Event(${this.events})`, 2, 40);
             this.ctx.fillText(`mouseObjects(${this.mouseObjects.map((item) => item.name)})`, 2, 50);
             this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
-            let x = 60;
+            let offsetX = 60;
             for (let obj of this.scene.objects) {
-                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, x);
-                x += 10;
+                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
+                offsetX += 10;
             }
         }
         this.frameAmount++;
