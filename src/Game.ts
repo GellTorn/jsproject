@@ -121,6 +121,14 @@ export default class Game {
     // window.addEventListener('focus', this.onFocus.bind(this));
     // window.addEventListener('blur', this.onBlur.bind(this));
 
+    // событие resize
+    // window.addEventListener('resize', ()=>{
+    //   this.width = window.innerWidth;
+    //   this.height = window.innerHeight;
+    //   this.canvas.width = this.width;
+    //   this.canvas.height = this.height;
+    // });
+
     // запускаем предзагрузку
     this.preload();
 
@@ -342,6 +350,8 @@ export default class Game {
       this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
       let offsetX = 60;
       for (let obj of this.scene.objects) {
+        if(!obj.position)
+          continue;
         this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
         offsetX += 10;
       }

@@ -52,7 +52,7 @@ class Camera extends Rectangle_1.default {
         }
         this.displayList = [];
         for (let obj of this.scene.objects) {
-            if (obj.name === 'Camera') {
+            if (!obj.isDraw) {
                 continue;
             }
             if (obj.offscreen(this)) {

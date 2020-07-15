@@ -9,12 +9,16 @@ import Sprite from "../src/Sprite";
 import Text from "../src/Text";
 import Circle from "../src/Circle";
 import Vector2 from "../src/Vector2";
+import Animation from "../src/Animation";
 
 const preload = function () {
   this.loadImage('rect', '../image/rect.png');
   this.loadImage('box', '../image/box.png');
   this.loadImage('ball', '../image/ball.png');
   this.loadImage('parrot', '../image/parrot.gif');
+  this.loadImage('idle', '../image/сhar_idle.png');
+  this.loadImage('walk1', '../image/сhar_walk1.png');
+  this.loadImage('walk2', '../image/сhar_walk2.png');
 }
 
 const create = function () {
@@ -154,9 +158,8 @@ const create = function () {
   let ball = scene.createEntity(new Sprite({
     scene: scene,
     position: new Vector2(-200, -300),
-    size: new Vector2(100, 100),
     angle: 0,
-    imageId: 'ball',
+    imageId: 'parrot',
     active: true,
     physics: true,
     update(time, ticks) {
@@ -180,27 +183,43 @@ const create = function () {
       timeToReload: 0,
     },
     update(time, ticks) {
-      let shot = () => {
-        this.scene.createEntity(new Circle({
-          position: new Vector2(this.position.x, this.position.y),
-          acceleration: new Vector2(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
-          radius: 4,
-          color: 'black',
-          angle: this.angle,
-          active: true,
-          physics: true,
-          drawingType: 'fill',
-          name: 'Bullet',
-          data: {
-            time: time,
-            delay: 1000 * 0.9,
-          },
-          update(time, ticks) {
-            if (this.data.time + this.data.delay < time) {
-              this.delete = true;
+      const shot = () => {
+        if (ticks > this.data.timeToReload + 10) {
+          this.data.reload = false;
+        }
+        if (!this.data.reload) {
+          const bullet = new Circle({
+            position: new Vector2(this.position.x, this.position.y),
+            acceleration: new Vector2(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
+            radius: 4,
+            color: 'black',
+            angle: this.angle,
+            active: true,
+            physics: true,
+            drawingType: 'fill',
+            name: 'Bullet',
+            data: {
+              time: time,
+              delay: 1000 * 0.9,
+            },
+            update(time, ticks) {
+              if (this.data.time + this.data.delay < time) {
+                this.delete = true;
+              }
             }
+          });
+          this.scene.createEntity(bullet);
+          this.data.reload = true;
+          this.data.timeToReload = ticks;
+
+          const arr = [ball, box, circle, circle2, ellipse, rect];
+
+          for(let x of arr) {
+            this.scene.game.physics.setCollision(bullet, x, ()=>{
+              x.delete = true;
+            });
           }
-        }));
+        }
       }
 
       if (this.scene.game.events.includes('KeyW')) {
@@ -218,14 +237,7 @@ const create = function () {
       }
 
       if (this.scene.game.events.includes('Space') || this.scene.game.events.includes('mouse0')) {
-        if (ticks > this.data.timeToReload + 10) {
-          this.data.reload = false;
-        }
-        if (!this.data.reload) {
-          shot();
-          this.data.reload = true;
-          this.data.timeToReload = ticks;
-        }
+        shot();
       }
 
       let mC = camera.getMouseCoordinates();
@@ -233,12 +245,38 @@ const create = function () {
     },
   }));
 
+  let character = scene.createEntity(new Sprite({
+    scene: scene,
+    position: new Vector2(300, -100),
+    angle: 0,
+    imageId: 'idle',
+    active: true,
+    physics: false,
+    data: {
+    },
+    update(time, ticks) {
+    }
+  }));
+
+  let walk = scene.createEntity(new Animation({
+      changingValue: 'image',
+      entity: character,
+      values: [
+        scene.game.getResource('walk1'),
+        scene.game.getResource('walk2'),
+      ],
+      framesPerChange: 20,
+      active: true,
+    })
+  );
+
   let camera = scene.createCamera(new Camera({
     ctx: game.ctx,
     position: new Vector2(0, 0),
     size: new Vector2(game.width, game.height),
     active: true,
     physics: false,
+    isDraw: false,
     update() {
       // зум на колесико
       if (this.scene.game.events.includes('up')) {

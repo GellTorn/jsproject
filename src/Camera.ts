@@ -79,7 +79,7 @@ export default class Camera extends Rectangle {
     // создаем лист отрисовки
     this.displayList = [];
     for (let obj of this.scene.objects) {
-      if (obj.name === 'Camera') {
+      if (!obj.isDraw) {
         continue;
       }
       if (obj.offscreen(this)) {

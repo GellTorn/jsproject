@@ -13,7 +13,9 @@ class Entity {
         this.mass = config.mass || 1;
         this.active = config.active || false;
         this.physics = config.physics || false;
+        this.isDraw = config.isDraw || true;
         this._angle = config.angle || 0;
+        this.body = config.body || null;
         this.delete = false;
         this.name = config.name || null;
         this.data = config.data || {};

@@ -16,6 +16,10 @@ export default class Entity {
   public active: boolean;
   /** флаг физики */
   public physics: boolean;
+  /** флаг отрисовки */
+  public isDraw: boolean;
+  /** физическое тело сущности */
+  public body: Entity | null;
   /** флаг на удаление */
   public delete: boolean;
   /** имя объекта */
@@ -44,7 +48,11 @@ export default class Entity {
 
     this.physics = config.physics || false;
 
+    this.isDraw = config.isDraw || true;
+
     this._angle = config.angle || 0;
+
+    this.body = config.body || null;
 
     this.delete = false;
 

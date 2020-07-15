@@ -8,7 +8,7 @@ const Vector2_1 = __importDefault(require("./Vector2"));
 class Rectangle extends Entity_1.default {
     constructor(config = {}) {
         super(config);
-        this.size = config.size || new Vector2_1.default();
+        this.size = config.size || new Vector2_1.default(0, 0);
         this.drawingType = config.drawingType || 'fill';
         this.name = this.name || 'Rectangle';
         this.color = config.color || '#000';

@@ -14,7 +14,7 @@ export default class Rectangle extends Entity {
   constructor(config: any = {}) {
     super(config);
 
-    this.size = config.size || new Vector2();
+    this.size = config.size || new Vector2(0, 0);
 
     this.drawingType = config.drawingType || 'fill';
 
