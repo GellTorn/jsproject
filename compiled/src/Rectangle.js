@@ -8,7 +8,7 @@ const Vector2_1 = __importDefault(require("./Vector2"));
 class Rectangle extends Entity_1.default {
     constructor(config = {}) {
         super(config);
-        this.size = config.size || new Vector2_1.default();
+        this.size = config.size || new Vector2_1.default(0, 0);
         this.drawingType = config.drawingType || 'fill';
         this.name = this.name || 'Rectangle';
         this.color = config.color || '#000';
@@ -27,10 +27,13 @@ class Rectangle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area(rect) {
+        return rect.size.x * rect.size.y;
+    }
     intersectPoint(point) {
         const hw = this.size.x / 2;
         const hh = this.size.y / 2;
-        const dist = this.distance(point);
+        const dist = this.position.distance(point);
         const res = {
             x: Math.cos(this.angle) * dist,
             y: Math.sin(this.angle) * dist,

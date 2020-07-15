@@ -1,4 +1,5 @@
 import Entity from './Entity';
+import Vector2 from './Vector2';
 
 export default class Circle extends Entity {
   /** радиус круга */
@@ -39,11 +40,15 @@ export default class Circle extends Entity {
     ctx.restore();
   }
 
-  intersectCircle(circle) {
-    return this.distance(circle) < this.radius + circle.radius;
+  area(): number {
+    return (this.radius > 0) ? Math.PI * this.radius * this.radius : 0;
   }
 
-  intersectPoint(point) {
-    return this.distance(point) < this.radius;
+  intersectCircle(circle: Circle): boolean {
+    return this.position.distance(circle.position) < this.radius + circle.radius;
+  }
+
+  intersectPoint(point: Vector2): boolean {
+    return this.position.distance(point) < this.radius;
   }
 };

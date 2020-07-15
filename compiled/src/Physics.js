@@ -1,18 +1,29 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const Circle_1 = __importDefault(require("./Circle"));
 class Physics {
     constructor(config = {}) {
         this.game = config.game || null;
         this.collisions = [];
     }
-    setCollision(obj1, obj2, callback) {
+    setCollision(bodyA, bodyB, callback) {
         const collision = {
-            obj1,
-            obj2,
+            bodyA,
+            bodyB,
             callback
         };
         this.collisions.push(collision);
         return collision;
+    }
+    checkCollision(collision) {
+        if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
+            if (collision.bodyA.intersectCircle(collision.bodyB)) {
+                collision.callback();
+            }
+        }
     }
     update(time, ticks) {
         for (let obj of this.game.scene.objects) {
@@ -28,6 +39,9 @@ class Physics {
             obj.position.y += obj.velocity.y;
             obj.acceleration.x = 0;
             obj.acceleration.y = 0;
+        }
+        for (let collision of this.collisions) {
+            this.checkCollision(collision);
         }
     }
 }

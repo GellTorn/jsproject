@@ -13,7 +13,9 @@ class Entity {
         this.mass = config.mass || 1;
         this.active = config.active || false;
         this.physics = config.physics || false;
+        this.isDraw = config.isDraw || true;
         this._angle = config.angle || 0;
+        this.body = config.body || null;
         this.delete = false;
         this.name = config.name || null;
         this.data = config.data || {};
@@ -35,16 +37,10 @@ class Entity {
     draw(ctx) {
     }
     offscreen(camera) {
-        if (this.distance(camera.position) > 2000) {
+        if (this.position.distance(camera.position) > 2000) {
             return false;
         }
         return true;
-    }
-    distance(position) {
-        const dx = this.position.x - position.x;
-        const dy = this.position.y - position.y;
-        const res = Math.sqrt(dx * dx + dy * dy);
-        return res;
     }
     applyForce(x, y) {
         this.acceleration.x += x / this.mass;

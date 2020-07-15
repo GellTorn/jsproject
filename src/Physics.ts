@@ -1,4 +1,6 @@
 import Game from './Game';
+import Entity from './Entity';
+import Circle from './Circle';
 
 export default class Physics {
   /** ссылка на объект игры */
@@ -13,14 +15,22 @@ export default class Physics {
     this.collisions = [];
   }
 
-  setCollision(obj1, obj2, callback) {
+  setCollision(bodyA: Entity, bodyB: Entity, callback) {
     const collision = {
-      obj1,
-      obj2,
+      bodyA,
+      bodyB,
       callback
     };
     this.collisions.push(collision);
     return collision;
+  }
+
+  checkCollision(collision) {
+    if(collision.bodyA instanceof Circle && collision.bodyB instanceof Circle) {
+      if(collision.bodyA.intersectCircle(collision.bodyB)){
+        collision.callback();
+      }
+    }
   }
 
   update(time, ticks) {
@@ -42,6 +52,9 @@ export default class Physics {
 
       obj.acceleration.x = 0;
       obj.acceleration.y = 0;
+    }
+    for (let collision of this.collisions) {
+      this.checkCollision(collision);
     }
   }
 }

@@ -27,11 +27,14 @@ class Circle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area() {
+        return (this.radius > 0) ? Math.PI * this.radius * this.radius : 0;
+    }
     intersectCircle(circle) {
-        return this.distance(circle) < this.radius + circle.radius;
+        return this.position.distance(circle.position) < this.radius + circle.radius;
     }
     intersectPoint(point) {
-        return this.distance(point) < this.radius;
+        return this.position.distance(point) < this.radius;
     }
 }
 exports.default = Circle;

@@ -12,11 +12,15 @@ const Sprite_1 = __importDefault(require("../src/Sprite"));
 const Text_1 = __importDefault(require("../src/Text"));
 const Circle_1 = __importDefault(require("../src/Circle"));
 const Vector2_1 = __importDefault(require("../src/Vector2"));
+const Animation_1 = __importDefault(require("../src/Animation"));
 const preload = function () {
     this.loadImage('rect', '../image/rect.png');
     this.loadImage('box', '../image/box.png');
     this.loadImage('ball', '../image/ball.png');
     this.loadImage('parrot', '../image/parrot.gif');
+    this.loadImage('idle', '../image/сhar_idle.png');
+    this.loadImage('walk1', '../image/сhar_walk1.png');
+    this.loadImage('walk2', '../image/сhar_walk2.png');
 };
 const create = function () {
     let scene = this.createScene('start');
@@ -41,27 +45,21 @@ const create = function () {
         angle: 0,
         active: true,
         data: {
-            point1: {
-                x: -400,
-                y: 400,
-            },
-            point2: {
-                x: 400,
-                y: 400,
-            },
+            point1: new Vector2_1.default(-400, 400),
+            point2: new Vector2_1.default(400, 400),
             speed: 4,
             forward: true,
         },
         update(time, ticks) {
             if (this.data.forward) {
                 this.position.x += this.data.speed;
-                if (this.distance(this.data.point2) <= 0) {
+                if (this.position.distance(this.data.point2) <= 0) {
                     this.data.forward = false;
                 }
             }
             else {
                 this.position.x -= this.data.speed;
-                if (this.distance(this.data.point1) <= 0) {
+                if (this.position.distance(this.data.point1) <= 0) {
                     this.data.forward = true;
                 }
             }
@@ -75,6 +73,7 @@ const create = function () {
         active: true,
         physics: true,
         update(time, ticks) {
+            this.angle += -0.1;
         }
     }));
     let text = scene.createEntity(new Text_1.default({
@@ -144,12 +143,12 @@ const create = function () {
     let ball = scene.createEntity(new Sprite_1.default({
         scene: scene,
         position: new Vector2_1.default(-200, -300),
-        size: new Vector2_1.default(100, 100),
         angle: 0,
-        imageId: 'ball',
+        imageId: 'parrot',
         active: true,
         physics: true,
         update(time, ticks) {
+            this.angle += 0.1;
         }
     }));
     let player = scene.createEntity(new Circle_1.default({
@@ -168,27 +167,41 @@ const create = function () {
             timeToReload: 0,
         },
         update(time, ticks) {
-            let shot = () => {
-                this.scene.createEntity(new Circle_1.default({
-                    position: new Vector2_1.default(this.position.x, this.position.y),
-                    acceleration: new Vector2_1.default(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
-                    radius: 4,
-                    color: 'black',
-                    angle: this.angle,
-                    active: true,
-                    physics: true,
-                    drawingType: 'fill',
-                    name: 'Bullet',
-                    data: {
-                        time: time,
-                        delay: 1000 * 0.9,
-                    },
-                    update(time, ticks) {
-                        if (this.data.time + this.data.delay < time) {
-                            this.delete = true;
+            const shot = () => {
+                if (ticks > this.data.timeToReload + 10) {
+                    this.data.reload = false;
+                }
+                if (!this.data.reload) {
+                    const bullet = new Circle_1.default({
+                        position: new Vector2_1.default(this.position.x, this.position.y),
+                        acceleration: new Vector2_1.default(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
+                        radius: 4,
+                        color: 'black',
+                        angle: this.angle,
+                        active: true,
+                        physics: true,
+                        drawingType: 'fill',
+                        name: 'Bullet',
+                        data: {
+                            time: time,
+                            delay: 1000 * 0.9,
+                        },
+                        update(time, ticks) {
+                            if (this.data.time + this.data.delay < time) {
+                                this.delete = true;
+                            }
                         }
+                    });
+                    this.scene.createEntity(bullet);
+                    this.data.reload = true;
+                    this.data.timeToReload = ticks;
+                    const arr = [ball, box, circle, circle2, ellipse, rect];
+                    for (let x of arr) {
+                        this.scene.game.physics.setCollision(bullet, x, () => {
+                            x.delete = true;
+                        });
                     }
-                }));
+                }
             };
             if (this.scene.game.events.includes('KeyW')) {
                 this.applyForce(0, -this.data.speed);
@@ -203,18 +216,32 @@ const create = function () {
                 this.applyForce(this.data.speed, 0);
             }
             if (this.scene.game.events.includes('Space') || this.scene.game.events.includes('mouse0')) {
-                if (ticks > this.data.timeToReload + 10) {
-                    this.data.reload = false;
-                }
-                if (!this.data.reload) {
-                    shot();
-                    this.data.reload = true;
-                    this.data.timeToReload = ticks;
-                }
+                shot();
             }
             let mC = camera.getMouseCoordinates();
             this.angle = Math.atan2(this.position.y - mC.y, this.position.x - mC.x);
         },
+    }));
+    let character = scene.createEntity(new Sprite_1.default({
+        scene: scene,
+        position: new Vector2_1.default(300, -100),
+        angle: 0,
+        imageId: 'idle',
+        active: true,
+        physics: false,
+        data: {},
+        update(time, ticks) {
+        }
+    }));
+    let walk = scene.createEntity(new Animation_1.default({
+        changingValue: 'image',
+        entity: character,
+        values: [
+            scene.game.getResource('walk1'),
+            scene.game.getResource('walk2'),
+        ],
+        framesPerChange: 20,
+        active: true,
     }));
     let camera = scene.createCamera(new Camera_1.default({
         ctx: game.ctx,
@@ -222,6 +249,7 @@ const create = function () {
         size: new Vector2_1.default(game.width, game.height),
         active: true,
         physics: false,
+        isDraw: false,
         update() {
             if (this.scene.game.events.includes('up')) {
                 this.zoom *= 1.1;
@@ -249,7 +277,44 @@ const game = new Game_1.default({
     create: create,
 });
 
-},{"../src/Camera":2,"../src/Circle":3,"../src/Ellipse":4,"../src/Game":6,"../src/Rectangle":8,"../src/Sprite":10,"../src/Text":11,"../src/Vector2":12}],2:[function(require,module,exports){
+},{"../src/Animation":2,"../src/Camera":3,"../src/Circle":4,"../src/Ellipse":5,"../src/Game":7,"../src/Rectangle":9,"../src/Sprite":11,"../src/Text":12,"../src/Vector2":13}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Animation {
+    constructor(config = {}) {
+        this.scene = config.scene || null;
+        this.entity = config.entity || null;
+        this.changingValue = config.changingValue || null;
+        this.values = config.values || [];
+        this.currentValue = config.currentValue || 0;
+        this.framesPerChange = config.framesPerChange || 1;
+        this.currentFrame = config.currentFrame || 0;
+        this.active = config.active || false;
+        this.repeat = config.repeat || -1;
+        this.yoyo = config.yoyo || false;
+        this.name = config.name || 'Animation';
+    }
+    update(time, ticks) {
+        this.currentFrame++;
+        if (this.currentFrame === this.framesPerChange) {
+            this.currentValue++;
+            if (this.currentValue >= this.values.length) {
+                this.currentValue = 0;
+            }
+            this.entity[this.changingValue] = this.values[this.currentValue];
+            this.currentFrame = 0;
+        }
+    }
+    run() {
+        this.active = false;
+    }
+    stop() {
+        this.active = true;
+    }
+}
+exports.default = Animation;
+
+},{}],3:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -304,7 +369,7 @@ class Camera extends Rectangle_1.default {
         }
         this.displayList = [];
         for (let obj of this.scene.objects) {
-            if (obj.name === 'Camera') {
+            if (!obj.isDraw) {
                 continue;
             }
             if (obj.offscreen(this)) {
@@ -341,7 +406,7 @@ class Camera extends Rectangle_1.default {
 }
 exports.default = Camera;
 
-},{"./Rectangle":8}],3:[function(require,module,exports){
+},{"./Rectangle":9}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -371,17 +436,20 @@ class Circle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area() {
+        return (this.radius > 0) ? Math.PI * this.radius * this.radius : 0;
+    }
     intersectCircle(circle) {
-        return this.distance(circle) < this.radius + circle.radius;
+        return this.position.distance(circle.position) < this.radius + circle.radius;
     }
     intersectPoint(point) {
-        return this.distance(point) < this.radius;
+        return this.position.distance(point) < this.radius;
     }
 }
 exports.default = Circle;
 ;
 
-},{"./Entity":5}],4:[function(require,module,exports){
+},{"./Entity":6}],5:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -409,11 +477,26 @@ class Ellipse extends Rectangle_1.default {
         }
         ctx.restore();
     }
+    getMinorRadius() {
+        return Math.min(this.size.x, this.size.y) / 2;
+    }
+    getMajorRadius() {
+        return Math.max(this.size.x, this.size.y) / 2;
+    }
+    isEmpty() {
+        return (this.size.x <= 0 || this.size.y <= 0);
+    }
+    area() {
+        if (this.isEmpty()) {
+            return 0;
+        }
+        return (this.getMajorRadius() * this.getMinorRadius() * Math.PI);
+    }
 }
 exports.default = Ellipse;
 ;
 
-},{"./Rectangle":8}],5:[function(require,module,exports){
+},{"./Rectangle":9}],6:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -429,7 +512,9 @@ class Entity {
         this.mass = config.mass || 1;
         this.active = config.active || false;
         this.physics = config.physics || false;
+        this.isDraw = config.isDraw || true;
         this._angle = config.angle || 0;
+        this.body = config.body || null;
         this.delete = false;
         this.name = config.name || null;
         this.data = config.data || {};
@@ -451,16 +536,10 @@ class Entity {
     draw(ctx) {
     }
     offscreen(camera) {
-        if (this.distance(camera.position) > 2000) {
+        if (this.position.distance(camera.position) > 2000) {
             return false;
         }
         return true;
-    }
-    distance(position) {
-        const dx = this.position.x - position.x;
-        const dy = this.position.y - position.y;
-        const res = Math.sqrt(dx * dx + dy * dy);
-        return res;
     }
     applyForce(x, y) {
         this.acceleration.x += x / this.mass;
@@ -470,7 +549,7 @@ class Entity {
 }
 exports.default = Entity;
 
-},{"./Vector2":12}],6:[function(require,module,exports){
+},{"./Vector2":13}],7:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -669,14 +748,16 @@ class Game {
             this.ctx.fillStyle = '#000';
             this.ctx.fillText(`${this.fps} fps`, 2, 10);
             this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
-            let mouse = this.scene.cameras[0].getMouseCoordinates();
+            const mouse = this.scene.cameras[0].getMouseCoordinates();
             this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Event(${this.events})`, 2, 40);
             this.ctx.fillText(`mouseObjects(${this.mouseObjects.map((item) => item.name)})`, 2, 50);
             this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
-            let x = 60;
+            let offsetX = 60;
             for (let obj of this.scene.objects) {
-                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, x);
-                x += 10;
+                if (!obj.position)
+                    continue;
+                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
+                offsetX += 10;
             }
         }
         this.frameAmount++;
@@ -692,22 +773,33 @@ class Game {
 }
 exports.default = Game;
 
-},{"./Physics":7,"./Scene":9}],7:[function(require,module,exports){
+},{"./Physics":8,"./Scene":10}],8:[function(require,module,exports){
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const Circle_1 = __importDefault(require("./Circle"));
 class Physics {
     constructor(config = {}) {
         this.game = config.game || null;
         this.collisions = [];
     }
-    setCollision(obj1, obj2, callback) {
+    setCollision(bodyA, bodyB, callback) {
         const collision = {
-            obj1,
-            obj2,
+            bodyA,
+            bodyB,
             callback
         };
         this.collisions.push(collision);
         return collision;
+    }
+    checkCollision(collision) {
+        if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
+            if (collision.bodyA.intersectCircle(collision.bodyB)) {
+                collision.callback();
+            }
+        }
     }
     update(time, ticks) {
         for (let obj of this.game.scene.objects) {
@@ -724,11 +816,14 @@ class Physics {
             obj.acceleration.x = 0;
             obj.acceleration.y = 0;
         }
+        for (let collision of this.collisions) {
+            this.checkCollision(collision);
+        }
     }
 }
 exports.default = Physics;
 
-},{}],8:[function(require,module,exports){
+},{"./Circle":4}],9:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -739,7 +834,7 @@ const Vector2_1 = __importDefault(require("./Vector2"));
 class Rectangle extends Entity_1.default {
     constructor(config = {}) {
         super(config);
-        this.size = config.size || new Vector2_1.default();
+        this.size = config.size || new Vector2_1.default(0, 0);
         this.drawingType = config.drawingType || 'fill';
         this.name = this.name || 'Rectangle';
         this.color = config.color || '#000';
@@ -758,10 +853,13 @@ class Rectangle extends Entity_1.default {
         }
         ctx.restore();
     }
+    area(rect) {
+        return rect.size.x * rect.size.y;
+    }
     intersectPoint(point) {
         const hw = this.size.x / 2;
         const hh = this.size.y / 2;
-        const dist = this.distance(point);
+        const dist = this.position.distance(point);
         const res = {
             x: Math.cos(this.angle) * dist,
             y: Math.sin(this.angle) * dist,
@@ -783,7 +881,7 @@ class Rectangle extends Entity_1.default {
 exports.default = Rectangle;
 ;
 
-},{"./Entity":5,"./Vector2":12}],9:[function(require,module,exports){
+},{"./Entity":6,"./Vector2":13}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Scene {
@@ -841,7 +939,7 @@ class Scene {
 }
 exports.default = Scene;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -854,15 +952,24 @@ class Sprite extends Rectangle_1.default {
         this.imageId = config.imageId || '';
         this.image = this.scene.game.getResource(this.imageId);
         this.name = this.name || 'Sprite';
+        if (this.size.x === 0 && this.size.y === 0) {
+            this.size.x = this.image.width;
+            this.size.y = this.image.height;
+        }
     }
     draw(ctx) {
         ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+    }
+    setImage(imageId) {
+        this.imageId = imageId;
+        this.image = this.scene.game.getResource(imageId);
+        return this;
     }
 }
 exports.default = Sprite;
 ;
 
-},{"./Rectangle":8}],11:[function(require,module,exports){
+},{"./Rectangle":9}],12:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -896,7 +1003,7 @@ class Text extends Rectangle_1.default {
 exports.default = Text;
 ;
 
-},{"./Rectangle":8}],12:[function(require,module,exports){
+},{"./Rectangle":9}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Vector2 {

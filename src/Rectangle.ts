@@ -14,7 +14,7 @@ export default class Rectangle extends Entity {
   constructor(config: any = {}) {
     super(config);
 
-    this.size = config.size || new Vector2();
+    this.size = config.size || new Vector2(0, 0);
 
     this.drawingType = config.drawingType || 'fill';
 
@@ -39,11 +39,15 @@ export default class Rectangle extends Entity {
     ctx.restore();
   }
 
-  intersectPoint(point) {
+  area(rect: Rectangle): number {
+    return rect.size.x * rect.size.y;
+  }
+
+  intersectPoint(point: Vector2): boolean {
     const hw = this.size.x / 2;
     const hh = this.size.y / 2;
 
-    const dist = this.distance(point);
+    const dist = this.position.distance(point);
 
     const res = {
       x: Math.cos(this.angle) * dist,
@@ -57,7 +61,7 @@ export default class Rectangle extends Entity {
     return true;
   }
 
-  intersectAABB(rect) {
+  intersectAABB(rect: Rectangle) {
     if (Math.abs(this.position.x - rect.position.x) > this.size.x / 2 + rect.size.x / 2)
       return false;
     if (Math.abs(this.position.y - rect.position.y) > this.size.y / 2 + rect.size.y / 2)
