@@ -30,10 +30,10 @@ class Rectangle extends Entity_1.default {
     area(rect) {
         return rect.size.x * rect.size.y;
     }
-    static intersectPointWithAngle(rect, point) {
+    static intersectPointWithAngle(rect, entity) {
         const hw = rect.size.x / 2;
         const hh = rect.size.y / 2;
-        const dist = rect.position.distance(point);
+        const dist = rect.position.distance(entity.position);
         const res = {
             x: Math.cos(rect.angle) * dist,
             y: Math.sin(rect.angle) * dist,

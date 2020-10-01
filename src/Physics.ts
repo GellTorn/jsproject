@@ -44,21 +44,21 @@ export default class Physics {
     }
 
     // if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
-    //   if(collision.bodyA.intersectAABB(collision.bodyB)){
+    //   if(Rectangle.intersectAABB(collision.bodyB, collision.bodyB)){
     //     collision.callback();
     //     return;
     //   }
     // }
 
     // if(collision.bodyA instanceof Rectangle && collision.bodyB) {
-    //   if(collision.bodyA.intersectPoint(collision.bodyB.position)){
+    //   if(Rectangle.intersectPointWithoutAngle(collision.bodyA, collision.bodyB)){
     //     collision.callback();
     //     return;
     //   }
     // }
 
     // if(collision.bodyA && collision.bodyB instanceof Rectangle) {
-    //   if(collision.bodyB.intersectPoint(collision.bodyA.position)){
+    //   if(Rectangle.intersectPointWithoutAngle(collision.bodyB, collision.bodyA)){
     //     collision.callback();
     //     return;
     //   }

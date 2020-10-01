@@ -43,11 +43,11 @@ export default class Rectangle extends Entity {
     return rect.size.x * rect.size.y;
   }
 
-  static intersectPointWithAngle(rect: Rectangle, point: Vector2): boolean {
+  static intersectPointWithAngle(rect: Rectangle, entity: Entity): boolean {
     const hw = rect.size.x / 2;
     const hh = rect.size.y / 2;
 
-    const dist = rect.position.distance(point);
+    const dist = rect.position.distance(entity.position);
 
     const res = {
       x: Math.cos(rect.angle) * dist,
