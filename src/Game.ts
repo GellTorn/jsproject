@@ -41,11 +41,11 @@ export default class Game {
   /** количество кадров в секунду */
   public fps: number;
   /** координаты мыши */
-  public mouse;
+  public mouse: Vector2;
   /** событие мыши при клике */
   public events;
   /** объекты на которые указывает мышь */
-  public mouseObjects;
+  public mouseObjects: Entity[];
 
   /** интервал проверки предзагурзки */
   protected _preloadDoneInterval;
@@ -94,10 +94,7 @@ export default class Game {
 
     this.fps = 0;
 
-    this.mouse = {
-      x: 0,
-      y: 0,
-    };
+    this.mouse = new Vector2();
 
     this.events = [];
 
@@ -138,8 +135,7 @@ export default class Game {
   }
 
   onMouseMove(event) {
-    this.mouse.x = event.offsetX;
-    this.mouse.y = event.offsetY;
+    this.mouse.set(event.offsetX, event.offsetY);
   }
 
   onMouseClick(event) {
@@ -152,8 +148,7 @@ export default class Game {
 
   onMouseDown(event) {
     this.events.push('mouse' + event.button);
-    this.mouse.x = event.offsetX;
-    this.mouse.y = event.offsetY;
+    this.mouse.set(event.offsetX, event.offsetY);
     event.preventDefault();
   }
 
@@ -163,8 +158,7 @@ export default class Game {
       return;
     }
     this.events.splice(index, 1);
-    this.mouse.x = event.offsetX;
-    this.mouse.y = event.offsetY;
+    this.mouse.set(event.offsetX, event.offsetY);
     event.preventDefault();
   }
 
@@ -345,9 +339,9 @@ export default class Game {
       this.ctx.fillText(`${this.fps} fps`, 2, 10);
       this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
       const mouse = this.scene.cameras[0].getMouseCoordinates();
-      this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Event(${this.events})`, 2, 40);
-      this.ctx.fillText(`mouseObjects(${this.mouseObjects.map((item) => item.name)})`, 2, 50);
-      this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
+      this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Mouse events: ${this.events}`, 2, 40);
+      this.ctx.fillText(`mouseObjects: ${this.mouseObjects.map((item) => item.name)}`, 2, 50);
+      this.ctx.fillText(`time: ${(this.scene.time / 1000).toFixed(1)} s`, 2, 20);
       let offsetX = 60;
       for (let obj of this.scene.objects) {
         if(!obj.position)

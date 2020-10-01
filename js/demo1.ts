@@ -28,12 +28,17 @@ const create = function () {
 
   };
 
-  let back = scene.createEntity(new Rectangle({
+  let background = scene.createEntity(new Rectangle({
     scene: scene,
     position: new Vector2(0, 0),
     size: new Vector2(10000, 10000),
     color: '#ccc',
     active: false,
+    name: 'background',
+    body: new Rectangle({
+      position: new Vector2(0, 0),
+      size: new Vector2(10000, 10000),
+    }),
     update(time, ticks) {
       this.size.x += 100;
       this.size.y += 100;
@@ -47,6 +52,10 @@ const create = function () {
     color: 'violet',
     angle: 0,
     active: true,
+    body: new Rectangle({
+      position: new Vector2(100, 400),
+      size: new Vector2(100, 50)
+    }),
     data: {
       point1: new Vector2(-400, 400),
       point2: new Vector2(400, 400),
@@ -96,6 +105,10 @@ const create = function () {
     angle: 0,
     text: 'WASD to control',
     active: false,
+    body: new Rectangle({
+      position: new Vector2(0, -200),
+      size: new Vector2(500, 50),
+    }),
   }));
 
   let circle = scene.createEntity(new Circle({
@@ -153,15 +166,25 @@ const create = function () {
     angle: 0,
     active: false,
     imageId: 'box',
+    name: 'WIDE BOX',
+    body: new Rectangle({
+      position: new Vector2(-200, 0),
+      size: new Vector2(100, 200),
+    }),
   }));
 
-  let ball = scene.createEntity(new Sprite({
+  let parrot = scene.createEntity(new Sprite({
     scene: scene,
     position: new Vector2(-200, -300),
     angle: 0,
     imageId: 'parrot',
+    name: 'parrot',
     active: true,
     physics: true,
+    body: new Rectangle({
+      position: new Vector2(-200, -300),
+      size: new Vector2(100, 100),
+    }),
     update(time, ticks) {
       this.angle += 0.1;
     }
@@ -212,7 +235,7 @@ const create = function () {
           this.data.reload = true;
           this.data.timeToReload = ticks;
 
-          const arr = [ball, box, circle, circle2, ellipse, rect];
+          const arr = [parrot, box, circle, circle2, ellipse, rect];
 
           for(let x of arr) {
             this.scene.game.physics.setCollision(bullet, x, ()=>{
@@ -240,8 +263,9 @@ const create = function () {
         shot();
       }
 
-      let mC = camera.getMouseCoordinates();
-      this.angle = Math.atan2(this.position.y - mC.y, this.position.x - mC.x);
+      // заставляем сущность поворачиваться за крусором
+      const mC = camera.getMouseCoordinates();
+      this.angle = Math.atan2(this.position.y - mC.y, this.position.x - mC.x) + Math.PI;
     },
   }));
 
@@ -250,12 +274,8 @@ const create = function () {
     position: new Vector2(300, -100),
     angle: 0,
     imageId: 'idle',
-    active: true,
+    active: false,
     physics: false,
-    data: {
-    },
-    update(time, ticks) {
-    }
   }));
 
   let walk = scene.createEntity(new Animation({
@@ -264,6 +284,17 @@ const create = function () {
       values: [
         scene.game.getResource('walk1'),
         scene.game.getResource('walk2'),
+        scene.game.getResource('walk1'),
+        scene.game.getResource('walk2'),
+        scene.game.getResource('walk1'),
+        scene.game.getResource('walk2'),
+        scene.game.getResource('walk1'),
+        scene.game.getResource('walk2'),
+        scene.game.getResource('walk1'),
+        scene.game.getResource('idle'),
+        scene.game.getResource('idle'),
+        scene.game.getResource('idle'),
+        scene.game.getResource('idle'),
       ],
       framesPerChange: 20,
       active: true,
@@ -288,12 +319,15 @@ const create = function () {
 
       // добаляем объекты на которые наведена мышь
       this.scene.game.mouseObjects = [];
-      const mouse = this.scene.game.mouse;
-      // for(let obj of this.scene.objects){
-      //     if(this.pointInRect(mouse, obj)){
-      //         this.scene.game.mouseObjects.push(obj);
-      //     }
-      // }
+
+      const arr = [parrot, background, rect, box];
+
+      const mouse = this.getMouseCoordinates();
+      for(let obj of arr){
+        if(Rectangle.intersectPointWithoutAngle(obj.body, mouse)){
+          this.scene.game.mouseObjects.push(obj);
+        }
+      }
     },
   }));
 
@@ -315,4 +349,3 @@ const game = new Game({
   preload: preload,
   create: create,
 });
-

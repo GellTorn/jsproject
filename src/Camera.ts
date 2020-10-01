@@ -40,36 +40,15 @@ export default class Camera extends Rectangle {
     this.displayList = [];
   }
 
-  pointInRect(point: Vector2, rect: Rectangle) {
-    const hw = rect.size.x / 2;
-    const hh = rect.size.y / 2;
-    const cx = rect.position.x + hw;
-    const cy = rect.position.y + hh;
-    const dx = cx - point.x;
-    const dy = cy - point.y;
-
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    const res = {
-      x: Math.cos(rect.angle) * dist,
-      y: Math.sin(rect.angle) * dist,
-    };
-
-    if (res.x > hw || res.x < -hw ||
-      res.y > hh || res.y < -hh) {
-      return false;
-    }
-    return true;
+  getMouseCoordinates(): Vector2 {
+    // работает правильно
+    return new Vector2(
+      (this.scene.game.mouse.x + this.position.x - this.size.x / 2),
+      (this.scene.game.mouse.y + this.position.y - this.size.y / 2),
+    );
   }
 
-  getMouseCoordinates() {
-    return {
-      x: -(this.scene.game.mouse.x - this.position.x - this.size.x / 2),
-      y: -(this.scene.game.mouse.y - this.position.y - this.size.y / 2),
-    };
-  }
-
-  render() {
+  render(): void {
     // если следуем за каким-то объектом, определяем координаты камеры
     if (this.follow) {
       this.position.x = this.follow.position.x;
@@ -82,7 +61,13 @@ export default class Camera extends Rectangle {
       if (!obj.isDraw) {
         continue;
       }
-      if (obj.offscreen(this)) {
+      // if (obj.offscreen(this)) {
+      //   this.displayList.push(obj);
+      // }
+      if(!obj.body)
+        obj.body = new Rectangle();
+      obj.body.position = obj.position;
+      if (Rectangle.intersectAABB(this, obj.body)) {
         this.displayList.push(obj);
       }
     }
@@ -116,23 +101,17 @@ export default class Camera extends Rectangle {
       if (this.scene.game.debug) {
         this.ctx.strokeStyle = 'red';
         this.ctx.beginPath();
-        this.ctx.moveTo(0, 0);
-        this.ctx.lineTo(50, 0);
+        this.ctx.moveTo(-15, 0);
+        this.ctx.lineTo(25, 0);
         this.ctx.stroke();
 
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(0, -25);
-        // this.ctx.lineTo(0, 25);
-        // this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -15);
+        this.ctx.lineTo(0, 15);
+        this.ctx.stroke();
       }
 
       this.ctx.restore();
-    }
-
-    if (this.scene.game.debug) {
-      this.ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-      this.ctx.fillRect(this.size.x / 2 - 1, this.size.y / 2 - 1, 2, 2);
-      this.ctx.fillRect(2, this.size.y / 4, 2, this.size.y / 4 * 3);
     }
   }
 }
