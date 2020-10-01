@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && cd ./compiled/src/ && browserify camera.js circle.js ellipse.js entity.js game.js physics.js rectangle.js scene.js sprite.js text.js vector2.js spritesheet.js animation.js -o main.js && cd ../../",
+    "build": "tsc && cd ./compiled/src/ && browserify Camera.js Circle.js Ellipse.js Entity.js Game.js Physics.js Rectangle.js Scene.js Sprite.js Text.js Vector2.js Spritesheet.js Animation.js -o Main.js && cd ../../",
     "build-demo1": "cd ./compiled/js/ && browserify demo1.js -o demo1.js && cd ../../"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/GellTorn/jsproject#readme",
   "dependencies": {
-    "typescript": "^3.9.5"
+    "browserify": "^16.5.2",
+    "typescript": "^3.9.7"
   }
 }
