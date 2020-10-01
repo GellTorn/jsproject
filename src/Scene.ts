@@ -58,19 +58,19 @@ export default class Scene {
     this.update = config.update || function () { };
   }
 
-  createCamera(camera) {
+  createCamera(camera: Camera): Camera {
     camera.scene = this;
     this.cameras.push(camera);
     return camera;
   }
 
-  createEntity(entity) {
+  createEntity(entity: Entity): Entity {
     entity.scene = this;
     this.objects.push(entity);
     return entity;
   }
 
-  createUpdateList() {
+  createUpdateList(): Scene {
     this.updateList = [];
     for (let obj of this.objects) {
       if (obj.active) {

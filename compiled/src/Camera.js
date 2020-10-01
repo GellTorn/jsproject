@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Rectangle_1 = __importDefault(require("./Rectangle"));
+const Vector2_1 = __importDefault(require("./Vector2"));
 class Camera extends Rectangle_1.default {
     constructor(config = {}) {
         super(config);
@@ -21,29 +22,8 @@ class Camera extends Rectangle_1.default {
         this.zoom = config.zoom || 1;
         this.displayList = [];
     }
-    pointInRect(point, rect) {
-        const hw = rect.size.x / 2;
-        const hh = rect.size.y / 2;
-        const cx = rect.position.x + hw;
-        const cy = rect.position.y + hh;
-        const dx = cx - point.x;
-        const dy = cy - point.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const res = {
-            x: Math.cos(rect.angle) * dist,
-            y: Math.sin(rect.angle) * dist,
-        };
-        if (res.x > hw || res.x < -hw ||
-            res.y > hh || res.y < -hh) {
-            return false;
-        }
-        return true;
-    }
     getMouseCoordinates() {
-        return {
-            x: -(this.scene.game.mouse.x - this.position.x - this.size.x / 2),
-            y: -(this.scene.game.mouse.y - this.position.y - this.size.y / 2),
-        };
+        return new Vector2_1.default((this.scene.game.mouse.x + this.position.x - this.size.x / 2), (this.scene.game.mouse.y + this.position.y - this.size.y / 2));
     }
     render() {
         if (this.follow) {
@@ -55,7 +35,10 @@ class Camera extends Rectangle_1.default {
             if (!obj.isDraw) {
                 continue;
             }
-            if (obj.offscreen(this)) {
+            if (!obj.body)
+                obj.body = new Rectangle_1.default();
+            obj.body.position = obj.position;
+            if (Rectangle_1.default.intersectAABB(this, obj.body)) {
                 this.displayList.push(obj);
             }
         }
@@ -74,16 +57,15 @@ class Camera extends Rectangle_1.default {
             if (this.scene.game.debug) {
                 this.ctx.strokeStyle = 'red';
                 this.ctx.beginPath();
-                this.ctx.moveTo(0, 0);
-                this.ctx.lineTo(50, 0);
+                this.ctx.moveTo(-15, 0);
+                this.ctx.lineTo(25, 0);
+                this.ctx.stroke();
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, -15);
+                this.ctx.lineTo(0, 15);
                 this.ctx.stroke();
             }
             this.ctx.restore();
-        }
-        if (this.scene.game.debug) {
-            this.ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-            this.ctx.fillRect(this.size.x / 2 - 1, this.size.y / 2 - 1, 2, 2);
-            this.ctx.fillRect(2, this.size.y / 4, 2, this.size.y / 4 * 3);
         }
     }
 }

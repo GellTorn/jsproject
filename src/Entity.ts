@@ -1,5 +1,7 @@
 import Scene from "./Scene";
 import Vector2 from "./Vector2";
+import Camera from "./Camera";
+import Rectangle from "./Rectangle";
 
 export default class Entity {
   /** ссылка на сцену которой пренадлежит сущность */
@@ -19,7 +21,7 @@ export default class Entity {
   /** флаг отрисовки */
   public isDraw: boolean;
   /** физическое тело сущности */
-  public body: Entity | null;
+  public _body: Rectangle | null;
   /** флаг на удаление */
   public delete: boolean;
   /** имя объекта */
@@ -28,6 +30,8 @@ export default class Entity {
   public data;
   /** метод обновления объекта */
   public update;
+  /** родительский объект */
+  public parent: Entity | null;
 
   /** угол поворота */
   protected  _angle: number;
@@ -52,7 +56,7 @@ export default class Entity {
 
     this._angle = config.angle || 0;
 
-    this.body = config.body || null;
+    this._body = config.body || null;
 
     this.delete = false;
 
@@ -61,6 +65,25 @@ export default class Entity {
     this.data = config.data || {};
 
     this.update = config.update || function () { };
+
+    this.parent = config.parent || null;
+  }
+
+  get body(): Rectangle | null {
+    return this._body;
+  }
+
+  set body(newBody: Rectangle | null) {
+    newBody.parent = this;
+    this._body = newBody;
+  }
+
+  get calculatedPosition(): Vector2 {
+    return new Vector2(this.position.x + this.parent.position.x, this.position.y + this.parent.position.y);
+  }
+
+  get calculatedAngle(): number {
+    return this.angle + this.parent.angle;
   }
 
   set angle(value) {
@@ -83,7 +106,7 @@ export default class Entity {
 
   }
 
-  offscreen(camera) {
+  offscreen(camera: Camera) {
     if (this.position.distance(camera.position) > 2000) {
       return false;
     }

@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Circle_1 = __importDefault(require("./Circle"));
-const Rectangle_1 = __importDefault(require("./Rectangle"));
+const Vector2_1 = __importDefault(require("./Vector2"));
 class Physics {
     constructor(config = {}) {
+        this.gravity = new Vector2_1.default(0, 0);
         this.game = config.game || null;
         this.collisions = [];
     }
@@ -22,24 +23,6 @@ class Physics {
     checkCollision(collision) {
         if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
             if (collision.bodyA.intersectCircle(collision.bodyB)) {
-                collision.callback();
-                return;
-            }
-        }
-        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB instanceof Rectangle_1.default) {
-            if (collision.bodyA.intersectAABB(collision.bodyB)) {
-                collision.callback();
-                return;
-            }
-        }
-        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB) {
-            if (collision.bodyA.intersectPoint(collision.bodyB.position)) {
-                collision.callback();
-                return;
-            }
-        }
-        if (collision.bodyA && collision.bodyB instanceof Rectangle_1.default) {
-            if (collision.bodyB.intersectPoint(collision.bodyA.position)) {
                 collision.callback();
                 return;
             }

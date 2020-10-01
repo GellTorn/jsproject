@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Scene_1 = __importDefault(require("./Scene"));
 const Physics_1 = __importDefault(require("./Physics"));
+const Vector2_1 = __importDefault(require("./Vector2"));
 class Game {
     constructor(config = {}) {
         this.canvas = config.canvas || null;
@@ -29,10 +30,7 @@ class Game {
         this.debug = config.debug || false;
         this.frameAmount = 0;
         this.fps = 0;
-        this.mouse = {
-            x: 0,
-            y: 0,
-        };
+        this.mouse = new Vector2_1.default();
         this.events = [];
         this.mouseObjects = [];
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
@@ -47,8 +45,7 @@ class Game {
         this._preloadDoneInterval = setInterval(this._preloadDone.bind(this), 100);
     }
     onMouseMove(event) {
-        this.mouse.x = event.offsetX;
-        this.mouse.y = event.offsetY;
+        this.mouse.set(event.offsetX, event.offsetY);
     }
     onMouseClick(event) {
         event.preventDefault();
@@ -58,8 +55,7 @@ class Game {
     }
     onMouseDown(event) {
         this.events.push('mouse' + event.button);
-        this.mouse.x = event.offsetX;
-        this.mouse.y = event.offsetY;
+        this.mouse.set(event.offsetX, event.offsetY);
         event.preventDefault();
     }
     onMouseUp(event) {
@@ -68,8 +64,7 @@ class Game {
             return;
         }
         this.events.splice(index, 1);
-        this.mouse.x = event.offsetX;
-        this.mouse.y = event.offsetY;
+        this.mouse.set(event.offsetX, event.offsetY);
         event.preventDefault();
     }
     onKeyDown(event) {
@@ -197,9 +192,9 @@ class Game {
             this.ctx.fillText(`${this.fps} fps`, 2, 10);
             this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
             const mouse = this.scene.cameras[0].getMouseCoordinates();
-            this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Event(${this.events})`, 2, 40);
-            this.ctx.fillText(`mouseObjects(${this.mouseObjects.map((item) => item.name)})`, 2, 50);
-            this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
+            this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Mouse events: ${this.events}`, 2, 40);
+            this.ctx.fillText(`mouseObjects: ${this.mouseObjects.map((item) => item.name)}`, 2, 50);
+            this.ctx.fillText(`time: ${(this.scene.time / 1000).toFixed(1)} s`, 2, 20);
             let offsetX = 60;
             for (let obj of this.scene.objects) {
                 if (!obj.position) {

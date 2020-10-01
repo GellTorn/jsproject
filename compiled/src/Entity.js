@@ -15,11 +15,25 @@ class Entity {
         this.physics = config.physics || false;
         this.isDraw = config.isDraw || true;
         this._angle = config.angle || 0;
-        this.body = config.body || null;
+        this._body = config.body || null;
         this.delete = false;
         this.name = config.name || null;
         this.data = config.data || {};
         this.update = config.update || function () { };
+        this.parent = config.parent || null;
+    }
+    get body() {
+        return this._body;
+    }
+    set body(newBody) {
+        newBody.parent = this;
+        this._body = newBody;
+    }
+    get calculatedPosition() {
+        return new Vector2_1.default(this.position.x + this.parent.position.x, this.position.y + this.parent.position.y);
+    }
+    get calculatedAngle() {
+        return this.angle + this.parent.angle;
     }
     set angle(value) {
         const max = Math.PI * 2;

@@ -2,6 +2,7 @@ import Game from './Game';
 import Entity from './Entity';
 import Circle from './Circle';
 import Rectangle from './Rectangle';
+import Vector2 from './Vector2';
 
 interface Collision {
   bodyA: Entity | Rectangle | Circle,
@@ -14,6 +15,8 @@ export default class Physics {
   public game: Game;
   /** массив объектов коллизий, проверяются в каждом обновлении физики */
   public collisions: Collision[];
+  /** Вектор гравитации */
+  public gravity: Vector2 = new Vector2(0, 0);
 
   constructor(config: any = {}) {
     this.game = config.game || null;
@@ -40,26 +43,26 @@ export default class Physics {
       }
     }
 
-    if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
-      if(collision.bodyA.intersectAABB(collision.bodyB)){
-        collision.callback();
-        return;
-      }
-    }
+    // if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
+    //   if(collision.bodyA.intersectAABB(collision.bodyB)){
+    //     collision.callback();
+    //     return;
+    //   }
+    // }
 
-    if(collision.bodyA instanceof Rectangle && collision.bodyB) {
-      if(collision.bodyA.intersectPoint(collision.bodyB.position)){
-        collision.callback();
-        return;
-      }
-    }
+    // if(collision.bodyA instanceof Rectangle && collision.bodyB) {
+    //   if(collision.bodyA.intersectPoint(collision.bodyB.position)){
+    //     collision.callback();
+    //     return;
+    //   }
+    // }
 
-    if(collision.bodyA && collision.bodyB instanceof Rectangle) {
-      if(collision.bodyB.intersectPoint(collision.bodyA.position)){
-        collision.callback();
-        return;
-      }
-    }
+    // if(collision.bodyA && collision.bodyB instanceof Rectangle) {
+    //   if(collision.bodyB.intersectPoint(collision.bodyA.position)){
+    //     collision.callback();
+    //     return;
+    //   }
+    // }
   }
 
   update(time: number, ticks: number) {

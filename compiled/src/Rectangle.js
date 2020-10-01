@@ -30,13 +30,13 @@ class Rectangle extends Entity_1.default {
     area(rect) {
         return rect.size.x * rect.size.y;
     }
-    intersectPoint(point) {
-        const hw = this.size.x / 2;
-        const hh = this.size.y / 2;
-        const dist = this.position.distance(point);
+    static intersectPointWithAngle(rect, point) {
+        const hw = rect.size.x / 2;
+        const hh = rect.size.y / 2;
+        const dist = rect.position.distance(point);
         const res = {
-            x: Math.cos(this.angle) * dist,
-            y: Math.sin(this.angle) * dist,
+            x: Math.cos(rect.angle) * dist,
+            y: Math.sin(rect.angle) * dist,
         };
         if (res.x > hw || res.x < -hw ||
             res.y > hh || res.y < -hh) {
@@ -44,10 +44,17 @@ class Rectangle extends Entity_1.default {
         }
         return true;
     }
-    intersectAABB(rect) {
-        if (Math.abs(this.position.x - rect.position.x) > this.size.x / 2 + rect.size.x / 2)
+    static intersectPointWithoutAngle(rect, point) {
+        if (Math.abs(rect.position.x - point.x) > rect.size.x / 2)
             return false;
-        if (Math.abs(this.position.y - rect.position.y) > this.size.y / 2 + rect.size.y / 2)
+        if (Math.abs(rect.position.y - point.y) > rect.size.y / 2)
+            return false;
+        return true;
+    }
+    static intersectAABB(rect1, rect2) {
+        if (Math.abs(rect1.position.x - rect2.position.x) > rect1.size.x / 2 + rect2.size.x / 2)
+            return false;
+        if (Math.abs(rect1.position.y - rect2.position.y) > rect1.size.y / 2 + rect2.size.y / 2)
             return false;
         return true;
     }
