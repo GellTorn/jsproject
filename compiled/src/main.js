@@ -101,6 +101,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Circle_1 = __importDefault(require("./Circle"));
+const Rectangle_1 = __importDefault(require("./Rectangle"));
 class Physics {
     constructor(config = {}) {
         this.game = config.game || null;
@@ -119,6 +120,25 @@ class Physics {
         if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
             if (collision.bodyA.intersectCircle(collision.bodyB)) {
                 collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB instanceof Rectangle_1.default) {
+            if (collision.bodyA.intersectAABB(collision.bodyB)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB) {
+            if (collision.bodyA.intersectPoint(collision.bodyB.position)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA && collision.bodyB instanceof Rectangle_1.default) {
+            if (collision.bodyB.intersectPoint(collision.bodyA.position)) {
+                collision.callback();
+                return;
             }
         }
     }
@@ -137,6 +157,12 @@ class Physics {
             obj.acceleration.x = 0;
             obj.acceleration.y = 0;
         }
+        this.collisions = this.collisions.filter((collision) => {
+            if (collision.bodyA.delete || collision.bodyB.delete) {
+                return false;
+            }
+            return true;
+        });
         for (let collision of this.collisions) {
             this.checkCollision(collision);
         }
@@ -144,7 +170,7 @@ class Physics {
 }
 exports.default = Physics;
 
-},{"./Circle":1}],4:[function(require,module,exports){
+},{"./Circle":1,"./Rectangle":4}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -810,8 +836,9 @@ class Game {
             this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
             let offsetX = 60;
             for (let obj of this.scene.objects) {
-                if (!obj.position)
+                if (!obj.position) {
                     continue;
+                }
                 this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
                 offsetX += 10;
             }
@@ -831,7 +858,7 @@ exports.default = Game;
 
 },{"./Physics":3,"./Scene":5}],13:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"./Circle":1,"dup":3}],14:[function(require,module,exports){
+},{"./Circle":1,"./Rectangle":4,"dup":3}],14:[function(require,module,exports){
 arguments[4][4][0].apply(exports,arguments)
 },{"./Entity":2,"./Vector2":6,"dup":4}],15:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)

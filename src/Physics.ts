@@ -1,12 +1,19 @@
 import Game from './Game';
 import Entity from './Entity';
 import Circle from './Circle';
+import Rectangle from './Rectangle';
+
+interface Collision {
+  bodyA: Entity | Rectangle | Circle,
+  bodyB: Entity | Rectangle | Circle,
+  callback: () => void,
+}
 
 export default class Physics {
   /** ссылка на объект игры */
   public game: Game;
   /** массив объектов коллизий, проверяются в каждом обновлении физики */
-  public collisions;
+  public collisions: Collision[];
 
   constructor(config: any = {}) {
     this.game = config.game || null;
@@ -15,7 +22,7 @@ export default class Physics {
     this.collisions = [];
   }
 
-  setCollision(bodyA: Entity, bodyB: Entity, callback) {
+  setCollision(bodyA: Entity, bodyB: Entity, callback: () => void) {
     const collision = {
       bodyA,
       bodyB,
@@ -25,15 +32,37 @@ export default class Physics {
     return collision;
   }
 
-  checkCollision(collision) {
+  checkCollision(collision: Collision) {
     if(collision.bodyA instanceof Circle && collision.bodyB instanceof Circle) {
       if(collision.bodyA.intersectCircle(collision.bodyB)){
         collision.callback();
+        return;
+      }
+    }
+
+    if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
+      if(collision.bodyA.intersectAABB(collision.bodyB)){
+        collision.callback();
+        return;
+      }
+    }
+
+    if(collision.bodyA instanceof Rectangle && collision.bodyB) {
+      if(collision.bodyA.intersectPoint(collision.bodyB.position)){
+        collision.callback();
+        return;
+      }
+    }
+
+    if(collision.bodyA && collision.bodyB instanceof Rectangle) {
+      if(collision.bodyB.intersectPoint(collision.bodyA.position)){
+        collision.callback();
+        return;
       }
     }
   }
 
-  update(time, ticks) {
+  update(time: number, ticks: number) {
     for (let obj of this.game.scene.objects) {
       if (!obj.physics) {
         continue;
@@ -53,6 +82,14 @@ export default class Physics {
       obj.acceleration.x = 0;
       obj.acceleration.y = 0;
     }
+
+    this.collisions = this.collisions.filter((collision: Collision) => {
+      if(collision.bodyA.delete || collision.bodyB.delete) {
+        return false;
+      }
+      return true;
+    });
+
     for (let collision of this.collisions) {
       this.checkCollision(collision);
     }

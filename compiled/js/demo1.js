@@ -6,6 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Game_1 = __importDefault(require("../src/Game"));
 const Camera_1 = __importDefault(require("../src/Camera"));
+const Entity_1 = __importDefault(require("../src/Entity"));
 const Rectangle_1 = __importDefault(require("../src/Rectangle"));
 const Ellipse_1 = __importDefault(require("../src/Ellipse"));
 const Sprite_1 = __importDefault(require("../src/Sprite"));
@@ -13,6 +14,47 @@ const Text_1 = __importDefault(require("../src/Text"));
 const Circle_1 = __importDefault(require("../src/Circle"));
 const Vector2_1 = __importDefault(require("../src/Vector2"));
 const Animation_1 = __importDefault(require("../src/Animation"));
+class HpBar extends Entity_1.default {
+    constructor(config = {}) {
+        super(config);
+        this.name = 'HP bar';
+        this.parentEntity = config.parentEntity || null;
+        this.offset = config.offset || new Vector2_1.default(0, -50);
+        this.size = config.size || new Vector2_1.default(100, 10);
+        this.color = config.color || 'red';
+    }
+    draw(ctx) {
+        if (this.parentEntity.data.hp === this.parentEntity.data.maxHp || this.parentEntity.data.hp <= 0) {
+            return;
+        }
+        const x = this.parentEntity.position.x - this.size.x / 2;
+        const y = this.parentEntity.position.y + this.offset.y;
+        ctx.fillStyle = '#000';
+        ctx.fillRect(x, y, this.size.x, this.size.y);
+        ctx.fillStyle = this.color;
+        const width = this.parentEntity.data.hp * this.size.x / this.parentEntity.data.maxHp;
+        ctx.fillRect(x, y, width, this.size.y);
+    }
+}
+class Box extends Sprite_1.default {
+    constructor(config = {}) {
+        super(config);
+        this.update = (time, ticks) => {
+            if (this.data.hp <= 0) {
+                this.delete = true;
+            }
+        };
+        this.size = new Vector2_1.default(100, 100);
+        this.active = true;
+        this.data = {
+            hp: 5,
+            maxHp: 5,
+        };
+        this.hpBar = this.scene.createEntity(new HpBar({
+            parentEntity: this,
+        }));
+    }
+}
 const preload = function () {
     this.loadImage('rect', '../image/rect.png');
     this.loadImage('box', '../image/box.png');
@@ -99,8 +141,13 @@ const create = function () {
             growSpeed: 0.5,
             minSize: 20,
             maxSize: 80,
+            hp: 5,
+            maxHp: 5,
         },
         update(time, ticks) {
+            if (this.data.hp <= 0) {
+                this.delete = true;
+            }
             if (this.data.grow) {
                 this.radius += this.data.growSpeed;
                 if (this.radius >= this.data.maxSize) {
@@ -122,7 +169,14 @@ const create = function () {
         color: 'yellow',
         drawingType: 'fill',
         active: true,
+        data: {
+            hp: 20,
+            maxHp: 20,
+        },
         update(time, ticks) {
+            if (this.data.hp <= 0) {
+                this.delete = true;
+            }
             let x0 = 500;
             let y0 = 200;
             let radius = 100;
@@ -132,12 +186,8 @@ const create = function () {
             this.position.y = y0 + Math.cos(angle + startAngle) * radius;
         }
     }));
-    let box = scene.createEntity(new Sprite_1.default({
-        scene: scene,
+    let box = scene.createEntity(new Box({
         position: new Vector2_1.default(-200, 0),
-        size: new Vector2_1.default(100, 200),
-        angle: 0,
-        active: false,
         imageId: 'box',
     }));
     let ball = scene.createEntity(new Sprite_1.default({
@@ -198,7 +248,10 @@ const create = function () {
                     const arr = [ball, box, circle, circle2, ellipse, rect];
                     for (let x of arr) {
                         this.scene.game.physics.setCollision(bullet, x, () => {
-                            x.delete = true;
+                            if (!bullet.data.colided) {
+                                x.data.hp -= 1;
+                                bullet.data.colided = true;
+                            }
                         });
                     }
                 }
@@ -228,8 +281,11 @@ const create = function () {
         angle: 0,
         imageId: 'idle',
         active: true,
-        physics: false,
-        data: {},
+        physics: true,
+        data: {
+            hp: 20,
+            maxHp: 20,
+        },
         update(time, ticks) {
         }
     }));
@@ -261,6 +317,19 @@ const create = function () {
             const mouse = this.scene.game.mouse;
         },
     }));
+    let hp1 = scene.createEntity(new HpBar({
+        parentEntity: character,
+        color: '#fcd703',
+    }));
+    let hp2 = scene.createEntity(new HpBar({
+        parentEntity: player,
+    }));
+    let hp3 = scene.createEntity(new HpBar({
+        parentEntity: circle,
+    }));
+    let hp4 = scene.createEntity(new HpBar({
+        parentEntity: circle2,
+    }));
     camera.follow = player;
     this.setScene('start');
 };
@@ -277,7 +346,7 @@ const game = new Game_1.default({
     create: create,
 });
 
-},{"../src/Animation":2,"../src/Camera":3,"../src/Circle":4,"../src/Ellipse":5,"../src/Game":7,"../src/Rectangle":9,"../src/Sprite":11,"../src/Text":12,"../src/Vector2":13}],2:[function(require,module,exports){
+},{"../src/Animation":2,"../src/Camera":3,"../src/Circle":4,"../src/Ellipse":5,"../src/Entity":6,"../src/Game":7,"../src/Rectangle":9,"../src/Sprite":11,"../src/Text":12,"../src/Vector2":13}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Animation {
@@ -754,8 +823,9 @@ class Game {
             this.ctx.fillText(`time:${(this.scene.time / 1000).toFixed(1)} sec`, 2, 20);
             let offsetX = 60;
             for (let obj of this.scene.objects) {
-                if (!obj.position)
+                if (!obj.position) {
                     continue;
+                }
                 this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
                 offsetX += 10;
             }
@@ -780,6 +850,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Circle_1 = __importDefault(require("./Circle"));
+const Rectangle_1 = __importDefault(require("./Rectangle"));
 class Physics {
     constructor(config = {}) {
         this.game = config.game || null;
@@ -798,6 +869,25 @@ class Physics {
         if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
             if (collision.bodyA.intersectCircle(collision.bodyB)) {
                 collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB instanceof Rectangle_1.default) {
+            if (collision.bodyA.intersectAABB(collision.bodyB)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB) {
+            if (collision.bodyA.intersectPoint(collision.bodyB.position)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA && collision.bodyB instanceof Rectangle_1.default) {
+            if (collision.bodyB.intersectPoint(collision.bodyA.position)) {
+                collision.callback();
+                return;
             }
         }
     }
@@ -816,6 +906,12 @@ class Physics {
             obj.acceleration.x = 0;
             obj.acceleration.y = 0;
         }
+        this.collisions = this.collisions.filter((collision) => {
+            if (collision.bodyA.delete || collision.bodyB.delete) {
+                return false;
+            }
+            return true;
+        });
         for (let collision of this.collisions) {
             this.checkCollision(collision);
         }
@@ -823,7 +919,7 @@ class Physics {
 }
 exports.default = Physics;
 
-},{"./Circle":4}],9:[function(require,module,exports){
+},{"./Circle":4,"./Rectangle":9}],9:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };

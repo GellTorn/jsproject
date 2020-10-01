@@ -11,6 +11,69 @@ import Circle from "../src/Circle";
 import Vector2 from "../src/Vector2";
 import Animation from "../src/Animation";
 
+class HpBar extends Entity {
+  parentEntity: Entity;
+
+  color: string;
+
+  offset: Vector2;
+
+  size: Vector2;
+
+  name: string = 'HP bar';
+
+  constructor(config: any = {}) {
+    super(config);
+
+    this.parentEntity = config.parentEntity || null;
+
+    this.offset = config.offset || new Vector2(0, -50);
+
+    this.size = config.size || new Vector2(100, 10);
+
+    this.color = config.color || 'red';
+  }
+
+  draw(ctx): void {
+    if(this.parentEntity.data.hp === this.parentEntity.data.maxHp || this.parentEntity.data.hp <= 0) {
+        return;
+    }
+    const x = this.parentEntity.position.x - this.size.x / 2;
+    const y = this.parentEntity.position.y + this.offset.y;
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(x, y, this.size.x, this.size.y);
+
+    ctx.fillStyle = this.color;
+    const width = this.parentEntity.data.hp * this.size.x / this.parentEntity.data.maxHp;
+    ctx.fillRect(x, y, width, this.size.y);
+  }
+}
+
+class Box extends Sprite {
+  hpBar: HpBar;
+  
+  constructor(config: any = {}) {
+    super(config);
+
+    this.size = new Vector2(100, 100);
+    this.active = true;
+    this.data = {
+      hp: 5,
+      maxHp: 5,
+    };
+    this.hpBar = this.scene.createEntity(new HpBar({
+      parentEntity: this,
+    }));
+  }
+
+  update = (time: number, ticks: number) => {
+    if(this.data.hp <= 0) {
+      this.delete = true;
+    }
+  }
+}
+
 const preload = function () {
   this.loadImage('rect', '../image/rect.png');
   this.loadImage('box', '../image/box.png');
@@ -111,8 +174,14 @@ const create = function () {
       growSpeed: 0.5,
       minSize: 20,
       maxSize: 80,
+      hp: 5,
+      maxHp: 5,
     },
     update(time, ticks) {
+      if(this.data.hp <= 0) {
+        this.delete = true;
+      }
+
       if (this.data.grow) {
         this.radius += this.data.growSpeed;
         if (this.radius >= this.data.maxSize) {
@@ -135,7 +204,15 @@ const create = function () {
     color: 'yellow',
     drawingType: 'fill',
     active: true,
+    data: {
+      hp: 20,
+      maxHp: 20,
+    },
     update(time, ticks) {
+      if(this.data.hp <= 0) {
+        this.delete = true;
+      }
+
       let x0 = 500;
       let y0 = 200;
       let radius = 100;
@@ -215,8 +292,11 @@ const create = function () {
           const arr = [ball, box, circle, circle2, ellipse, rect];
 
           for(let x of arr) {
-            this.scene.game.physics.setCollision(bullet, x, ()=>{
-              x.delete = true;
+            this.scene.game.physics.setCollision(bullet, x, () => {
+              if(!bullet.data.colided) {
+                x.data.hp -= 1;
+                bullet.data.colided = true;
+              }
             });
           }
         }
@@ -251,8 +331,10 @@ const create = function () {
     angle: 0,
     imageId: 'idle',
     active: true,
-    physics: false,
+    physics: true,
     data: {
+      hp: 20,
+      maxHp: 20,
     },
     update(time, ticks) {
     }
@@ -295,6 +377,23 @@ const create = function () {
       //     }
       // }
     },
+  }));
+
+  let hp1 = scene.createEntity(new HpBar({
+    parentEntity: character,
+    color: '#fcd703',
+  }));
+
+  let hp2 = scene.createEntity(new HpBar({
+    parentEntity: player,
+  }));
+
+  let hp3 = scene.createEntity(new HpBar({
+    parentEntity: circle,
+  }));
+
+  let hp4 = scene.createEntity(new HpBar({
+    parentEntity: circle2,
   }));
 
   camera.follow = player;
