@@ -1,12 +1,15 @@
 import Game from './Game';
 import Entity from './Entity';
 import Circle from './Circle';
+import Vector2 from './Vector2';
 
 export default class Physics {
   /** ссылка на объект игры */
   public game: Game;
   /** массив объектов коллизий, проверяются в каждом обновлении физики */
   public collisions;
+  /** Вектор гравитации */
+  public gravity: Vector2 = new Vector2(0, 0);
 
   constructor(config: any = {}) {
     this.game = config.game || null;
