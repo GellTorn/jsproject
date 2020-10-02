@@ -493,6 +493,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Circle_1 = __importDefault(require("./Circle"));
+const Rectangle_1 = __importDefault(require("./Rectangle"));
 const Vector2_1 = __importDefault(require("./Vector2"));
 class Physics {
     constructor(config = {}) {
@@ -512,6 +513,24 @@ class Physics {
     checkCollision(collision) {
         if (collision.bodyA instanceof Circle_1.default && collision.bodyB instanceof Circle_1.default) {
             if (collision.bodyA.intersectCircle(collision.bodyB)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB instanceof Rectangle_1.default) {
+            if (Rectangle_1.default.intersectAABB(collision.bodyB, collision.bodyB)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA instanceof Rectangle_1.default && collision.bodyB) {
+            if (Rectangle_1.default.intersectPointWithoutAngle(collision.bodyA, collision.bodyB.position)) {
+                collision.callback();
+                return;
+            }
+        }
+        if (collision.bodyA && collision.bodyB instanceof Rectangle_1.default) {
+            if (Rectangle_1.default.intersectPointWithoutAngle(collision.bodyB, collision.bodyA.position)) {
                 collision.callback();
                 return;
             }
@@ -545,7 +564,7 @@ class Physics {
 }
 exports.default = Physics;
 
-},{"./Circle":3,"./Vector2":13}],8:[function(require,module,exports){
+},{"./Circle":3,"./Rectangle":8,"./Vector2":13}],8:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };

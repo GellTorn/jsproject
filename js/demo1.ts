@@ -354,6 +354,7 @@ const create = function () {
     position: new Vector2(300, -100),
     angle: 0,
     imageId: 'idle',
+    name: 'character',
     active: true,
     physics: true,
     data: {
