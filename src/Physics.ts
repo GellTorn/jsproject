@@ -36,33 +36,34 @@ export default class Physics {
   }
 
   checkCollision(collision: Collision) {
+    // Circle x Circle
     if(collision.bodyA instanceof Circle && collision.bodyB instanceof Circle) {
       if(collision.bodyA.intersectCircle(collision.bodyB)){
         collision.callback();
         return;
       }
     }
-
-    // if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
-    //   if(Rectangle.intersectAABB(collision.bodyB, collision.bodyB)){
-    //     collision.callback();
-    //     return;
-    //   }
-    // }
-
-    // if(collision.bodyA instanceof Rectangle && collision.bodyB) {
-    //   if(Rectangle.intersectPointWithoutAngle(collision.bodyA, collision.bodyB)){
-    //     collision.callback();
-    //     return;
-    //   }
-    // }
-
-    // if(collision.bodyA && collision.bodyB instanceof Rectangle) {
-    //   if(Rectangle.intersectPointWithoutAngle(collision.bodyB, collision.bodyA)){
-    //     collision.callback();
-    //     return;
-    //   }
-    // }
+    // Rectangle x Rectangle
+    if(collision.bodyA instanceof Rectangle && collision.bodyB instanceof Rectangle) {
+      if(Rectangle.intersectAABB(collision.bodyB, collision.bodyB)){
+        collision.callback();
+        return;
+      }
+    }
+    // Rectangle x Point
+    if(collision.bodyA instanceof Rectangle && collision.bodyB) {
+      if(Rectangle.intersectPointWithoutAngle(collision.bodyA, collision.bodyB.position)){
+        collision.callback();
+        return;
+      }
+    }
+    // Point x Rectangle
+    if(collision.bodyA && collision.bodyB instanceof Rectangle) {
+      if(Rectangle.intersectPointWithoutAngle(collision.bodyB, collision.bodyA.position)){
+        collision.callback();
+        return;
+      }
+    }
   }
 
   update(time: number, ticks: number) {
