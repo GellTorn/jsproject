@@ -1,15 +1,15 @@
-import Game from "../src/Game";
-import Camera from "../src/Camera";
-import Scene from "../src/Scene";
-import Entity from "../src/Entity";
-import Rectangle from "../src/Rectangle";
-import Physics from "../src/Physics";
-import Ellipse from "../src/Ellipse";
-import Sprite from "../src/Sprite";
-import Text from "../src/Text";
-import Circle from "../src/Circle";
-import Vector2 from "../src/Vector2";
-import Animation from "../src/Animation";
+import Game from "./Game";
+import Camera from "./Camera";
+import Scene from "./Scene";
+import Entity from "./GameObjects/Entity";
+import Rectangle from "./GameObjects/Rectangle";
+import Physics from "./Physics";
+import Ellipse from "./GameObjects/Ellipse";
+import Sprite from "./GameObjects/Sprite";
+import Text from "./GameObjects/Text";
+import Circle from "./GameObjects/Circle";
+import Vector2 from "./Vector2";
+import Animation from "./Animation";
 
 class HpBar extends Entity {
   parentEntity: Entity;

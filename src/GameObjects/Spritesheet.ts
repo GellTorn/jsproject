@@ -1,5 +1,5 @@
 import Rectangle from './Rectangle';
-import Vector2 from './Vector2';
+import Vector2 from '../Vector2';
 
 export default class Spritesheet extends Rectangle {
   /** Имя объекта */

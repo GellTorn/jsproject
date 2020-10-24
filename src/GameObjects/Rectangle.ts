@@ -1,5 +1,5 @@
 import Entity from './Entity';
-import Vector2 from './Vector2';
+import Vector2 from '../Vector2';
 
 export default class Rectangle extends Entity {
   /** размеры */

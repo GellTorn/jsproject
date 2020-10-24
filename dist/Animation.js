@@ -1,7 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Animation {
-    constructor(config = {}) {
+var Animation = (function () {
+    function Animation(config) {
+        if (config === void 0) { config = {}; }
         this.scene = config.scene || null;
         this.entity = config.entity || null;
         this.changingValue = config.changingValue || null;
@@ -14,7 +13,7 @@ class Animation {
         this.yoyo = config.yoyo || false;
         this.name = config.name || 'Animation';
     }
-    update(time, ticks) {
+    Animation.prototype.update = function (time, ticks) {
         this.currentFrame++;
         if (this.currentFrame === this.framesPerChange) {
             this.currentValue++;
@@ -24,12 +23,13 @@ class Animation {
             this.entity[this.changingValue] = this.values[this.currentValue];
             this.currentFrame = 0;
         }
-    }
-    run() {
+    };
+    Animation.prototype.run = function () {
         this.active = false;
-    }
-    stop() {
+    };
+    Animation.prototype.stop = function () {
         this.active = true;
-    }
-}
-exports.default = Animation;
+    };
+    return Animation;
+}());
+export default Animation;

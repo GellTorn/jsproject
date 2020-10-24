@@ -1,13 +1,9 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const Scene_1 = __importDefault(require("./Scene"));
-const Physics_1 = __importDefault(require("./Physics"));
-const Vector2_1 = __importDefault(require("./Vector2"));
-class Game {
-    constructor(config = {}) {
+import Scene from "./Scene";
+import Physics from "./Physics";
+import Vector2 from "./Vector2";
+var Game = (function () {
+    function Game(config) {
+        if (config === void 0) { config = {}; }
         this.canvas = config.canvas || null;
         this.version = '0.0.1';
         this.width = config.width || 600;
@@ -24,13 +20,13 @@ class Game {
         this.preload = config.preload || function () { };
         this.create = config.create || function () { };
         this.scene = null;
-        this.physics = config.physics || new Physics_1.default({
+        this.physics = config.physics || new Physics({
             game: this,
         });
         this.debug = config.debug || false;
         this.frameAmount = 0;
         this.fps = 0;
-        this.mouse = new Vector2_1.default();
+        this.mouse = new Vector2();
         this.events = [];
         this.mouseObjects = [];
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
@@ -44,87 +40,90 @@ class Game {
         this.preload();
         this._preloadDoneInterval = setInterval(this._preloadDone.bind(this), 100);
     }
-    onMouseMove(event) {
+    Game.prototype.onMouseMove = function (event) {
         this.mouse.set(event.offsetX, event.offsetY);
-    }
-    onMouseClick(event) {
+    };
+    Game.prototype.onMouseClick = function (event) {
         event.preventDefault();
-    }
-    onContextMenu(event) {
+    };
+    Game.prototype.onContextMenu = function (event) {
         event.preventDefault();
-    }
-    onMouseDown(event) {
+    };
+    Game.prototype.onMouseDown = function (event) {
         this.events.push('mouse' + event.button);
         this.mouse.set(event.offsetX, event.offsetY);
         event.preventDefault();
-    }
-    onMouseUp(event) {
-        const index = this.events.indexOf('mouse' + event.button);
+    };
+    Game.prototype.onMouseUp = function (event) {
+        var index = this.events.indexOf('mouse' + event.button);
         if (index == -1) {
             return;
         }
         this.events.splice(index, 1);
         this.mouse.set(event.offsetX, event.offsetY);
         event.preventDefault();
-    }
-    onKeyDown(event) {
+    };
+    Game.prototype.onKeyDown = function (event) {
         if (event.repeat) {
             return;
         }
         this.events.push(event.code);
-    }
-    onKeyUp(event) {
+    };
+    Game.prototype.onKeyUp = function (event) {
         while (this.events.indexOf(event.code) != -1) {
-            let index = this.events.indexOf(event.code);
+            var index = this.events.indexOf(event.code);
             this.events.splice(index, 1);
         }
         event.preventDefault();
-    }
-    onWheel(event) {
+    };
+    Game.prototype.onWheel = function (event) {
         if (event.deltaY < 0) {
             this.events.push('up');
         }
         else if (event.deltaY > 0) {
             this.events.push('down');
         }
-    }
-    onFocus(event) {
+    };
+    Game.prototype.onFocus = function (event) {
         this.scene.paused = false;
-    }
-    onBlur(event) {
+    };
+    Game.prototype.onBlur = function (event) {
         this.scene.paused = true;
-    }
-    checkEventCode(event, events) {
-    }
-    setScene(sceneId) {
+    };
+    Game.prototype.checkEventCode = function (event, events) {
+    };
+    Game.prototype.setScene = function (sceneId) {
         this.scene = this.scenes[sceneId];
         return this;
-    }
-    createScene(sceneId, config = {}) {
-        let scene = new Scene_1.default(config);
+    };
+    Game.prototype.createScene = function (sceneId, config) {
+        if (config === void 0) { config = {}; }
+        var scene = new Scene(config);
         scene.game = this;
         this.scenes[sceneId] = scene;
         return scene;
-    }
-    check() {
+    };
+    Game.prototype.check = function () {
         this.fps = this.frameAmount;
         this.frameAmount = 0;
-    }
-    loadImage(resourceId, source) {
-        let image = new Image();
+    };
+    Game.prototype.loadImage = function (resourceId, source) {
+        var _this = this;
+        var image = new Image();
         this.resources[resourceId] = {
             resource: image,
             loaded: false,
         };
         image.src = source;
-        image.onload = () => {
-            this.resources[resourceId].loaded = true;
+        image.onload = function () {
+            _this.resources[resourceId].loaded = true;
         };
         image.onload.bind(this);
         return this;
-    }
-    loadVideo(resourceId, source) {
-        let video = document.createElement('video');
+    };
+    Game.prototype.loadVideo = function (resourceId, source) {
+        var _this = this;
+        var video = document.createElement('video');
         video.muted = true;
         video.loop = true;
         this.resources[resourceId] = {
@@ -132,18 +131,18 @@ class Game {
             loaded: false,
         };
         video.src = source;
-        video.onload = () => {
-            this.resources[resourceId].loaded = true;
+        video.onload = function () {
+            _this.resources[resourceId].loaded = true;
             video.play();
         };
         video.onload.bind(this);
         return this;
-    }
-    getResource(resourceId) {
+    };
+    Game.prototype.getResource = function (resourceId) {
         return this.resources[resourceId].resource;
-    }
-    _preloadDone() {
-        for (let resource in this.resources) {
+    };
+    Game.prototype._preloadDone = function () {
+        for (var resource in this.resources) {
             if (!this.resources[resource].loaded) {
                 console.log('not ready');
                 return false;
@@ -151,18 +150,18 @@ class Game {
         }
         clearInterval(this._preloadDoneInterval);
         this.create();
-        console.info(`Game engine v${this.version}`);
+        console.info("Game engine v" + this.version);
         window.requestAnimationFrame(this.update.bind(this));
         this._setFps = setInterval(this.check.bind(this), 1000);
-    }
-    update() {
+    };
+    Game.prototype.update = function () {
         if (this.scene == null) {
             return;
         }
         if (!this.scene.paused) {
             this.scene.time = Date.now() - this.scene.lastTimePaused;
             this.scene.timeTick++;
-            this.scene.objects = this.scene.objects.filter((obj) => {
+            this.scene.objects = this.scene.objects.filter(function (obj) {
                 if (!obj.delete) {
                     return true;
                 }
@@ -170,7 +169,8 @@ class Game {
             });
             this.scene.createUpdateList();
             this.physics.update(this.scene.time, this.scene.timeTick);
-            for (let obj of this.scene.updateList) {
+            for (var _i = 0, _a = this.scene.updateList; _i < _a.length; _i++) {
+                var obj = _a[_i];
                 obj.update(this.scene.time, this.scene.timeTick);
             }
             this.scene.update(this.scene.time, this.scene.timeTick);
@@ -182,37 +182,41 @@ class Game {
             this.ctx.fillStyle = this.backgroudColor;
             this.ctx.fillRect(0, 0, this.width, this.height);
         }
-        for (let camera of this.scene.cameras) {
+        for (var _b = 0, _c = this.scene.cameras; _b < _c.length; _b++) {
+            var camera = _c[_b];
             camera.render();
         }
         if (this.debug) {
             this.ctx.textAlign = 'left';
             this.ctx.font = '8px';
             this.ctx.fillStyle = '#000';
-            this.ctx.fillText(`${this.fps} fps`, 2, 10);
-            this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);
-            const mouse = this.scene.cameras[0].getMouseCoordinates();
-            this.ctx.fillText(`mouse(${this.mouse.x}, ${this.mouse.y}) (${mouse.x}, ${mouse.y}) Mouse events: ${this.events}`, 2, 40);
-            this.ctx.fillText(`mouseObjects: ${this.mouseObjects.map((item) => item.name)}`, 2, 50);
-            this.ctx.fillText(`time: ${(this.scene.time / 1000).toFixed(1)} s`, 2, 20);
-            let offsetX = 60;
-            for (let obj of this.scene.objects) {
+            this.ctx.fillText(this.fps + " fps", 2, 10);
+            this.ctx.fillText("camera(" + this.scene.cameras[0].position.x + ", " + this.scene.cameras[0].position.y + ", " + this.scene.cameras[0].zoom + ")", 2, 30);
+            var mouse = this.scene.cameras[0].getMouseCoordinates();
+            this.ctx.fillText("mouse(" + this.mouse.x + ", " + this.mouse.y + ") (" + mouse.x + ", " + mouse.y + ") Mouse events: " + this.events, 2, 40);
+            this.ctx.fillText("mouseObjects: " + this.mouseObjects.map(function (item) { return item.name; }), 2, 50);
+            this.ctx.fillText("time: " + (this.scene.time / 1000).toFixed(1) + " s", 2, 20);
+            var offsetX = 60;
+            for (var _d = 0, _e = this.scene.objects; _d < _e.length; _d++) {
+                var obj = _e[_d];
                 if (!obj.position) {
                     continue;
                 }
-                this.ctx.fillText(`${obj.name}(${obj.position.x}, ${obj.position.y}, ${obj.angle})`, 2, offsetX);
+                this.ctx.fillText(obj.name + "(" + obj.position.x + ", " + obj.position.y + ", " + obj.angle + ")", 2, offsetX);
                 offsetX += 10;
             }
         }
         this.frameAmount++;
-        let delEvents = ['up', 'down'];
-        for (let x of delEvents) {
+        var delEvents = ['up', 'down'];
+        for (var _f = 0, delEvents_1 = delEvents; _f < delEvents_1.length; _f++) {
+            var x = delEvents_1[_f];
             while (this.events.indexOf(x) != -1) {
-                let ind = this.events.indexOf(x);
+                var ind = this.events.indexOf(x);
                 this.events.splice(ind, 1);
             }
         }
         window.requestAnimationFrame(this.update.bind(this));
-    }
-}
-exports.default = Game;
+    };
+    return Game;
+}());
+export default Game;

@@ -1,6 +1,6 @@
-import Rectangle from "./Rectangle";
+import Rectangle from "./GameObjects/Rectangle";
 import Scene from "./Scene";
-import Entity from "./Entity";
+import Entity from "./GameObjects/Entity";
 import Vector2 from "./Vector2";
 
 export default class Camera extends Rectangle {

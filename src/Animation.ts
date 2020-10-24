@@ -1,5 +1,5 @@
 import Scene from "./Scene";
-import Entity from "./Entity";
+import Entity from "./GameObjects/Entity";
 
 export default class Animation {
     /** ссылка на сцену которой пренадлежит анимация */
