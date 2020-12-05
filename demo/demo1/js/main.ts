@@ -1,15 +1,15 @@
-import Game from "./Game";
-import Camera from "./Camera";
-import Scene from "./Scene";
-import Entity from "./GameObjects/Entity";
-import Rectangle from "./GameObjects/Rectangle";
-import Physics from "./Physics";
-import Ellipse from "./GameObjects/Ellipse";
-import Sprite from "./GameObjects/Sprite";
-import Text from "./GameObjects/Text";
-import Circle from "./GameObjects/Circle";
-import Vector2 from "./Vector2";
-import Animation from "./Animation";
+import Game from "../../../src/Game";
+import Camera from "../../../src/Camera";
+import Scene from "../../../src/Scene";
+import Entity from "../../../src/GameObjects/Entity";
+import Rectangle from "../../../src/GameObjects/Rectangle";
+import Physics from "../../../src/Physics";
+import Ellipse from "../../../src/GameObjects/Ellipse";
+import Sprite from "../../../src/GameObjects/Sprite";
+import Text from "../../../src/GameObjects/Text";
+import Circle from "../../../src/GameObjects/Circle";
+import Vector2 from "../../../src/Vector2";
+import Animation from "../../../src/Animation";
 
 class HpBar extends Entity {
   parentEntity: Entity;
@@ -75,13 +75,13 @@ class Box extends Sprite {
 }
 
 const preload = function () {
-  this.loadImage('rect', '../image/rect.png');
-  this.loadImage('box', '../image/box.png');
-  this.loadImage('ball', '../image/ball.png');
-  this.loadImage('parrot', '../image/parrot.gif');
-  this.loadImage('idle', '../image/сhar_idle.png');
-  this.loadImage('walk1', '../image/сhar_walk1.png');
-  this.loadImage('walk2', '../image/сhar_walk2.png');
+  this.loadImage('rect', '../demo1/image/rect.png');
+  this.loadImage('box', '../demo1/image/box.png');
+  this.loadImage('ball', '../demo1/image/ball.png');
+  this.loadImage('parrot', '../demo1/image/parrot.gif');
+  this.loadImage('idle', '../demo1/image/сhar_idle.png');
+  this.loadImage('walk1', '../demo1/image/сhar_walk1.png');
+  this.loadImage('walk2', '../demo1/image/сhar_walk2.png');
 }
 
 const create = function () {

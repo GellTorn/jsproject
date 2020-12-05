@@ -11,16 +11,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import Game from "./Game";
-import Camera from "./Camera";
-import Entity from "./GameObjects/Entity";
-import Rectangle from "./GameObjects/Rectangle";
-import Ellipse from "./GameObjects/Ellipse";
-import Sprite from "./GameObjects/Sprite";
-import Text from "./GameObjects/Text";
-import Circle from "./GameObjects/Circle";
-import Vector2 from "./Vector2";
-import Animation from "./Animation";
+import Game from "../../../src/Game";
+import Camera from "../../../src/Camera";
+import Entity from "../../../src/GameObjects/Entity";
+import Rectangle from "../../../src/GameObjects/Rectangle";
+import Ellipse from "../../../src/GameObjects/Ellipse";
+import Sprite from "../../../src/GameObjects/Sprite";
+import Text from "../../../src/GameObjects/Text";
+import Circle from "../../../src/GameObjects/Circle";
+import Vector2 from "../../../src/Vector2";
+import Animation from "../../../src/Animation";
 var HpBar = (function (_super) {
     __extends(HpBar, _super);
     function HpBar(config) {
@@ -71,13 +71,13 @@ var Box = (function (_super) {
     return Box;
 }(Sprite));
 var preload = function () {
-    this.loadImage('rect', '../image/rect.png');
-    this.loadImage('box', '../image/box.png');
-    this.loadImage('ball', '../image/ball.png');
-    this.loadImage('parrot', '../image/parrot.gif');
-    this.loadImage('idle', '../image/сhar_idle.png');
-    this.loadImage('walk1', '../image/сhar_walk1.png');
-    this.loadImage('walk2', '../image/сhar_walk2.png');
+    this.loadImage('rect', '../demo1/image/rect.png');
+    this.loadImage('box', '../demo1/image/box.png');
+    this.loadImage('ball', '../demo1/image/ball.png');
+    this.loadImage('parrot', '../demo1/image/parrot.gif');
+    this.loadImage('idle', '../demo1/image/сhar_idle.png');
+    this.loadImage('walk1', '../demo1/image/сhar_walk1.png');
+    this.loadImage('walk2', '../demo1/image/сhar_walk2.png');
 };
 var create = function () {
     var scene = this.createScene('start');
