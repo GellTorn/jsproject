@@ -1,6 +1,6 @@
 import Game from "./Game";
 import Camera from "./Camera";
-import Entity from "./Entity";
+import Entity from "./GameObjects/Entity";
 
 export default class Scene {
   /** ссылка на объект игры */

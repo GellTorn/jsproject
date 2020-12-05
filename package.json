@@ -4,10 +4,12 @@
   "description": "game framework",
   "main": "index.js",
   "scripts": {
+    "start": "webpack serve",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build-source && npm run build-demo1",
     "build-source": "tsc && cd ./compiled/src/ && browserify Camera.js Circle.js Ellipse.js Entity.js Game.js Physics.js Rectangle.js Scene.js Sprite.js Text.js Vector2.js Spritesheet.js Animation.js -o main.js && cd ../../",
-    "build-demo1": "cd ./compiled/js/ && browserify demo1.js -o demo1.js && cd ../../"
+    "build-demo1": "cd ./compiled/js/ && browserify demo1.js -o demo1.js && cd ../../",
+    "web": "tsc && webpack"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,11 @@
   "homepage": "https://github.com/GellTorn/jsproject#readme",
   "dependencies": {
     "browserify": "^16.5.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "webpack": "^5.2.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.1.0",
+    "webpack-dev-server": "^3.11.0"
   }
 }

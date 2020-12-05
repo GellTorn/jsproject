@@ -1,12 +1,12 @@
 import Camera from "./Camera";
 import Scene from "./Scene";
-import Entity from "./Entity";
-import Rectangle from "./Rectangle";
+import Entity from "./GameObjects/Entity";
+import Rectangle from "./GameObjects/Rectangle";
 import Physics from "./Physics";
-import Ellipse from "./Ellipse";
-import Sprite from "./Sprite";
-import Text from "./Text";
-import Circle from "./Circle";
+import Ellipse from "./GameObjects/Ellipse";
+import Sprite from "./GameObjects/Sprite";
+import Text from "./GameObjects/Text";
+import Circle from "./GameObjects/Circle";
 import Vector2 from "./Vector2";
 
 export default class Game {
