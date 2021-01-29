@@ -15,8 +15,8 @@ module.exports = [
   {
     entry: path.resolve(__dirname, 'dist/demo/demo1/js/main.js'),
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'demo1.js',
+      path: path.resolve(__dirname, 'demo/demo1/js'),
+      filename: 'main.js',
     }
   }
 ];

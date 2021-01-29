@@ -10,69 +10,7 @@ import Text from "../../../src/GameObjects/Text";
 import Circle from "../../../src/GameObjects/Circle";
 import Vector2 from "../../../src/Vector2";
 import Animation from "../../../src/Animation";
-
-class HpBar extends Entity {
-  parentEntity: Entity;
-
-  color: string;
-
-  offset: Vector2;
-
-  size: Vector2;
-
-  name: string = 'HP bar';
-
-  constructor(config: any = {}) {
-    super(config);
-
-    this.parentEntity = config.parentEntity || null;
-
-    this.offset = config.offset || new Vector2(0, -50);
-
-    this.size = config.size || new Vector2(100, 10);
-
-    this.color = config.color || 'red';
-  }
-
-  draw(ctx): void {
-    if(this.parentEntity.data.hp === this.parentEntity.data.maxHp || this.parentEntity.data.hp <= 0) {
-        return;
-    }
-    const x = this.parentEntity.position.x - this.size.x / 2;
-    const y = this.parentEntity.position.y + this.offset.y;
-
-    ctx.fillStyle = '#000';
-    ctx.fillRect(x, y, this.size.x, this.size.y);
-
-    ctx.fillStyle = this.color;
-    const width = this.parentEntity.data.hp * this.size.x / this.parentEntity.data.maxHp;
-    ctx.fillRect(x, y, width, this.size.y);
-  }
-}
-
-class Box extends Sprite {
-  hpBar;
-  
-  constructor(config: any = {}) {
-    super(config);
-
-    this.size = new Vector2(100, 100);
-    this.active = true;
-    this.data = {
-      hp: 5,
-      maxHp: 5,
-    };
-    this.hpBar = this.scene.createEntity(new HpBar({
-      parentEntity: this,
-    }));
-  }
-
-  update = (time: number, ticks: number) => {
-    if(this.data.hp <= 0) {
-      this.delete = true;
-    }
-  }
-}
+import HpBar from "./HpBar";
 
 const preload = function () {
   this.loadImage('rect', '../demo1/image/rect.png');

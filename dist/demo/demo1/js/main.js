@@ -1,19 +1,5 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 import Game from "../../../src/Game";
 import Camera from "../../../src/Camera";
-import Entity from "../../../src/GameObjects/Entity";
 import Rectangle from "../../../src/GameObjects/Rectangle";
 import Ellipse from "../../../src/GameObjects/Ellipse";
 import Sprite from "../../../src/GameObjects/Sprite";
@@ -21,55 +7,7 @@ import Text from "../../../src/GameObjects/Text";
 import Circle from "../../../src/GameObjects/Circle";
 import Vector2 from "../../../src/Vector2";
 import Animation from "../../../src/Animation";
-var HpBar = (function (_super) {
-    __extends(HpBar, _super);
-    function HpBar(config) {
-        if (config === void 0) { config = {}; }
-        var _this = _super.call(this, config) || this;
-        _this.name = 'HP bar';
-        _this.parentEntity = config.parentEntity || null;
-        _this.offset = config.offset || new Vector2(0, -50);
-        _this.size = config.size || new Vector2(100, 10);
-        _this.color = config.color || 'red';
-        return _this;
-    }
-    HpBar.prototype.draw = function (ctx) {
-        if (this.parentEntity.data.hp === this.parentEntity.data.maxHp || this.parentEntity.data.hp <= 0) {
-            return;
-        }
-        var x = this.parentEntity.position.x - this.size.x / 2;
-        var y = this.parentEntity.position.y + this.offset.y;
-        ctx.fillStyle = '#000';
-        ctx.fillRect(x, y, this.size.x, this.size.y);
-        ctx.fillStyle = this.color;
-        var width = this.parentEntity.data.hp * this.size.x / this.parentEntity.data.maxHp;
-        ctx.fillRect(x, y, width, this.size.y);
-    };
-    return HpBar;
-}(Entity));
-var Box = (function (_super) {
-    __extends(Box, _super);
-    function Box(config) {
-        if (config === void 0) { config = {}; }
-        var _this = _super.call(this, config) || this;
-        _this.update = function (time, ticks) {
-            if (_this.data.hp <= 0) {
-                _this.delete = true;
-            }
-        };
-        _this.size = new Vector2(100, 100);
-        _this.active = true;
-        _this.data = {
-            hp: 5,
-            maxHp: 5,
-        };
-        _this.hpBar = _this.scene.createEntity(new HpBar({
-            parentEntity: _this,
-        }));
-        return _this;
-    }
-    return Box;
-}(Sprite));
+import HpBar from "./HpBar";
 var preload = function () {
     this.loadImage('rect', '../demo1/image/rect.png');
     this.loadImage('box', '../demo1/image/box.png');
