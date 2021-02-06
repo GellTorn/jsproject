@@ -23,7 +23,7 @@ export default class Rectangle extends Entity {
     this.color = config.color || '#000';
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.strokeStyle = this.color;
     ctx.fillStyle = this.color;
@@ -61,19 +61,19 @@ export default class Rectangle extends Entity {
     return true;
   }
 
-  static intersectPointWithoutAngle(rect: Rectangle, point: Vector2): boolean {
-    if (Math.abs(rect.position.x - point.x) > rect.size.x / 2)
+  static intersectPointWithoutAngle(rect: Rectangle, point: Entity): boolean {
+    if (Math.abs(rect.position.x - point.position.x) > rect.size.x / 2)
       return false;
-    if (Math.abs(rect.position.y - point.y) > rect.size.y / 2)
+    if (Math.abs(rect.position.y - point.position.y) > rect.size.y / 2)
       return false;
     return true;
   }
 
-  static intersectAABB(rect1: Rectangle, rect2: Rectangle) {
+  static intersectAABB(rect1: Rectangle, rect2: Rectangle): boolean {
     if (Math.abs(rect1.position.x - rect2.position.x) > rect1.size.x / 2 + rect2.size.x / 2)
       return false;
     if (Math.abs(rect1.position.y - rect2.position.y) > rect1.size.y / 2 + rect2.size.y / 2)
       return false;
     return true;
   }
-};
+}

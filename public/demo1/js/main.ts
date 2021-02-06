@@ -334,11 +334,11 @@ const create = function () {
       const arr = [parrot, background, rect, box];
 
       const mouse = this.getMouseCoordinates();
-      for(const obj of arr){
-        if(Rectangle.intersectPointWithoutAngle(obj.body, mouse)){
-          this.scene.game.mouseObjects.push(obj);
-        }
-      }
+      // for(const obj of arr){
+      //   if(Rectangle.intersectPointWithoutAngle(obj.body, mouse)){
+      //     this.scene.game.mouseObjects.push(obj);
+      //   }
+      // }
     },
   }));
 

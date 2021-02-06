@@ -47,14 +47,14 @@ export default class Physics {
     }
     // Rectangle x Point
     if(collision.bodyA instanceof Rectangle && collision.bodyB) {
-      if(Rectangle.intersectPointWithoutAngle(collision.bodyA, collision.bodyB.position)){
+      if(Rectangle.intersectPointWithoutAngle(collision.bodyA, collision.bodyB)){
         collision.callback();
         return;
       }
     }
     // Point x Rectangle
     if(collision.bodyA && collision.bodyB instanceof Rectangle) {
-      if(Rectangle.intersectPointWithoutAngle(collision.bodyB, collision.bodyA.position)){
+      if(Rectangle.intersectPointWithoutAngle(collision.bodyB, collision.bodyA)){
         collision.callback();
         return;
       }
