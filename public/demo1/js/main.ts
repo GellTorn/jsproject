@@ -1,5 +1,5 @@
 import Game from "../../../src/Game";
-import Camera from "../../../src/Camera";
+import Camera from "../../../src/GameObjects/Camera";
 import Scene from "../../../src/Scene";
 import Entity from "../../../src/GameObjects/Entity";
 import Rectangle from "../../../src/GameObjects/Rectangle";

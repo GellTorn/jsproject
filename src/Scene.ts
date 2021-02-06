@@ -1,5 +1,5 @@
 import Game from "./Game";
-import Camera from "./Camera";
+import Camera from "./GameObjects/Camera";
 import Entity from "./GameObjects/Entity";
 
 export default class Scene {

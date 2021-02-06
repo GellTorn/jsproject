@@ -1,6 +1,6 @@
 import Scene from "../Scene";
 import Vector2 from "../Vector2";
-import Camera from "../Camera";
+import Camera from "./Camera";
 import Rectangle from "./Rectangle";
 
 export default class Entity {

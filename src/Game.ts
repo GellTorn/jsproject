@@ -1,15 +1,11 @@
-import Camera from "./Camera";
+import Camera from "./GameObjects/Camera";
 import Scene from "./Scene";
-import Entity from "./GameObjects/Entity";
-import Rectangle from "./GameObjects/Rectangle";
 import Physics from "./Physics";
-import Ellipse from "./GameObjects/Ellipse";
-import Sprite from "./GameObjects/Sprite";
-import Text from "./GameObjects/Text";
-import Circle from "./GameObjects/Circle";
 import Vector2 from "./Vector2";
+import GameObjects from './GameObjects/index';
 
 export default class Game {
+  public GameObjects = GameObjects;
   /** холст */
   public canvas;
   /** версия продукта */
@@ -327,7 +323,7 @@ export default class Game {
       this.ctx.fillRect(0, 0, this.width, this.height);
     }
     // отрисовываем
-    for (let camera of this.scene.cameras) {
+    for (const camera of this.scene.cameras) {
       camera.render();
     }
 
