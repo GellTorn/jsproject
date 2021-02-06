@@ -1,7 +1,7 @@
 import Game from './Game';
-import Entity from './GameObjects/Entity';
-import Circle from './GameObjects/Circle';
-import Rectangle from './GameObjects/Rectangle';
+import Entity from './GameEntities/Entity';
+import Circle from './GameEntities/Circle';
+import Rectangle from './GameEntities/Rectangle';
 import Vector2 from './Vector2';
 
 interface Collision {

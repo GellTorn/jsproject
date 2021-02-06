@@ -1,6 +1,6 @@
 import Game from "./Game";
-import Camera from "./GameObjects/Camera";
-import Entity from "./GameObjects/Entity";
+import Camera from "./GameEntities/Camera";
+import Entity from "./GameEntities/Entity";
 
 export default class Scene {
   /** ссылка на объект игры */
@@ -32,14 +32,14 @@ export default class Scene {
     this.cameras = config.cameras || [];
 
     // присваиваем каждой камере указатель на сцену
-    for (let camera of this.cameras) {
+    for (const camera of this.cameras) {
       camera.scene = this;
     }
 
     this.objects = config.objects || [];
 
     // присваиваем каждой объекту указатель на сцену
-    for (let obj of this.objects) {
+    for (const obj of this.objects) {
       obj.scene = this;
     }
 
@@ -55,7 +55,7 @@ export default class Scene {
 
     this._paused = config.paused || false;
 
-    this.update = config.update || function () { };
+    this.update = config.update || function () {};
   }
 
   createCamera(camera: Camera): Camera {
@@ -72,12 +72,12 @@ export default class Scene {
 
   createUpdateList(): Scene {
     this.updateList = [];
-    for (let obj of this.objects) {
+    for (const obj of this.objects) {
       if (obj.active) {
         this.updateList.push(obj);
       }
     }
-    for (let camera of this.cameras) {
+    for (const camera of this.cameras) {
       if (camera.active) {
         this.updateList.push(camera);
       }
@@ -86,7 +86,7 @@ export default class Scene {
     return this;
   }
 
-  set paused(value) {
+  set paused(value: boolean) {
     if (value) {
       this.lastTimePaused = Date.now();
     }

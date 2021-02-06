@@ -1,4 +1,4 @@
-import Entity from "../../../src/GameObjects/Entity";
+import Entity from "../../../src/GameEntities/Entity";
 import Vector2 from "../../../src/Vector2";
 
 export default class HpBar extends Entity {

@@ -1,8 +1,7 @@
-import Camera from "./GameObjects/Camera";
 import Scene from "./Scene";
 import Physics from "./Physics";
 import Vector2 from "./Vector2";
-import GameObjects from './GameObjects/index';
+import GameObjects from './GameEntities/index';
 
 export default class Game {
   public GameObjects = GameObjects;
