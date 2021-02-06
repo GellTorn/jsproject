@@ -18,7 +18,7 @@ export default class Ellipse extends Rectangle {
     this.color = config.color || '#000';
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.fillStyle = this.color;
     ctx.strokeStyle = this.color;
@@ -53,4 +53,4 @@ export default class Ellipse extends Rectangle {
 
     return (this.getMajorRadius() * this.getMinorRadius() * Math.PI);
   }
-};
+}

@@ -1,10 +1,11 @@
 import Drawable from "../interfaces/Drawable";
+import Updatable from "../interfaces/Updatable";
 import Scene from "../Scene";
 import Vector2 from "../Vector2";
 import Camera from "./Camera";
 import Rectangle from "./Rectangle";
 
-export default class Entity implements Drawable {
+export default class Entity implements Drawable, Updatable {
   /** ссылка на сцену которой пренадлежит сущность */
   public scene: Scene;
   /** позиция */
@@ -107,7 +108,7 @@ export default class Entity implements Drawable {
 
   }
 
-  offscreen(camera: Camera) {
+  offscreen(camera: Camera): boolean {
     if (this.position.distance(camera.position) > 2000) {
       return false;
     }

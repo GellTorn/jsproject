@@ -57,7 +57,7 @@ export default class Camera extends Rectangle {
 
     // создаем лист отрисовки
     this.displayList = [];
-    for (let obj of this.scene.objects) {
+    for (const obj of this.scene.objects) {
       if (!obj.isDraw) {
         continue;
       }
@@ -77,12 +77,12 @@ export default class Camera extends Rectangle {
     // });
 
     // отрисовываем объекты
-    for (let obj of this.displayList) {
-      let x = obj.position.x;
-      let y = obj.position.y;
-      let ang = obj.angle;
+    for (const obj of this.displayList) {
+      const x = obj.position.x;
+      const y = obj.position.y;
+      const ang = obj.angle;
 
-      let z = this.zoom;
+      const z = this.zoom;
 
       this.ctx.save();
 
