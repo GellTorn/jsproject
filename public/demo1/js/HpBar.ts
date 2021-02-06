@@ -10,7 +10,7 @@ export default class HpBar extends Entity {
   
     size: Vector2;
   
-    name: string = 'HP bar';
+    name: 'HP bar';
   
     constructor(config: any = {}) {
       super(config);
@@ -24,7 +24,7 @@ export default class HpBar extends Entity {
       this.color = config.color || 'red';
     }
   
-    draw(ctx): void {
+    draw(ctx: CanvasRenderingContext2D): void {
       if(this.parentEntity.data.hp === this.parentEntity.data.maxHp || this.parentEntity.data.hp <= 0) {
           return;
       }

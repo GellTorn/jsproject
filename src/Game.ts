@@ -78,9 +78,7 @@ export default class Game {
 
     this.scene = null;
 
-    this.physics = config.physics || new Physics({
-      game: this,
-    });
+    this.physics = new Physics({ game: this });
 
     this.debug = config.debug || false;
 

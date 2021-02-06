@@ -1,9 +1,6 @@
 import Game from "../../../src/Game";
 import Camera from "../../../src/GameEntities/Camera";
-import Scene from "../../../src/Scene";
-import Entity from "../../../src/GameEntities/Entity";
 import Rectangle from "../../../src/GameEntities/Rectangle";
-import Physics from "../../../src/Physics/Physics";
 import Ellipse from "../../../src/GameEntities/Ellipse";
 import Sprite from "../../../src/GameEntities/Sprite";
 import Text from "../../../src/GameEntities/Text";
@@ -23,9 +20,9 @@ const preload = function () {
 }
 
 const create = function () {
-  let scene = this.createScene('start');
+  const scene = this.createScene('start');
 
-  let background = scene.createEntity(new Rectangle({
+  const background = scene.createEntity(new Rectangle({
     scene: scene,
     position: new Vector2(0, 0),
     size: new Vector2(10000, 10000),
@@ -42,7 +39,7 @@ const create = function () {
     }
   }));
 
-  let rect = scene.createEntity(new Rectangle({
+  const rect = scene.createEntity(new Rectangle({
     scene: scene,
     position: new Vector2(100, 400),
     size: new Vector2(100, 50),
@@ -60,20 +57,15 @@ const create = function () {
       forward: true,
     },
     update(time, ticks) {
-      // function interpolate(x1, y1, x2, y2, x) {
-      //     const y = y1 + (y2 - y1) / (x2 - x1) * (x - x1);
-      //     return y;
-      // }
-
       if (this.data.forward) {
-
         this.position.x += this.data.speed;
+
         if (this.position.distance(this.data.point2) <= 0) {
           this.data.forward = false;
         }
-      }
-      else {
+      } else {
         this.position.x -= this.data.speed;
+
         if (this.position.distance(this.data.point1) <= 0) {
           this.data.forward = true;
         }
@@ -81,7 +73,7 @@ const create = function () {
     },
   }));
 
-  let ellipse = scene.createEntity(new Ellipse({
+  const ellipse = scene.createEntity(new Ellipse({
     scene: scene,
     position: new Vector2(100, 300),
     size: new Vector2(100, 50),
@@ -93,7 +85,7 @@ const create = function () {
     }
   }));
 
-  let text = scene.createEntity(new Text({
+  const text = scene.createEntity(new Text({
     scene: scene,
     position: new Vector2(0, -200),
     size: new Vector2(500, 50),
@@ -108,7 +100,7 @@ const create = function () {
     }),
   }));
 
-  let circle = scene.createEntity(new Circle({
+  const circle = scene.createEntity(new Circle({
     scene: scene,
     position: new Vector2(200, 100),
     radius: 80,
@@ -126,7 +118,7 @@ const create = function () {
     },
     update(time, ticks) {
       if(this.data.hp <= 0) {
-        this.delete = true;
+        this.deconste = true;
       }
 
       if (this.data.grow) {
@@ -144,7 +136,7 @@ const create = function () {
     }
   }));
 
-  let circle2 = scene.createEntity(new Circle({
+  const circle2 = scene.createEntity(new Circle({
     scene: scene,
     position: new Vector2(0, 0),
     radius: 25,
@@ -157,20 +149,20 @@ const create = function () {
     },
     update(time, ticks) {
       if(this.data.hp <= 0) {
-        this.delete = true;
+        this.deconste = true;
       }
 
-      let x0 = 500;
-      let y0 = 200;
-      let radius = 100;
-      let startAngle = 0;
-      let angle = time / 200; // aka speed
+      const x0 = 500;
+      const y0 = 200;
+      const radius = 100;
+      const startAngle = 0;
+      const angle = time / 200; // aka speed
       this.position.x = x0 + Math.sin(angle + startAngle) * radius;
       this.position.y = y0 + Math.cos(angle + startAngle) * radius;
     }
   }));
 
-  let box = scene.createEntity(new Sprite({
+  const box = scene.createEntity(new Sprite({
     scene: scene,
     position: new Vector2(-200, 0),
     size: new Vector2(100, 200),
@@ -184,7 +176,7 @@ const create = function () {
     }),
   }));
 
-  let parrot = scene.createEntity(new Sprite({
+  const parrot = scene.createEntity(new Sprite({
     scene: scene,
     position: new Vector2(-200, -300),
     angle: 0,
@@ -201,7 +193,7 @@ const create = function () {
     }
   }));
 
-  let player = scene.createEntity(new Circle({
+  const player = scene.createEntity(new Circle({
     scene: scene,
     position: new Vector2(0, 0),
     radius: 50,
@@ -222,7 +214,7 @@ const create = function () {
           this.data.reload = false;
         }
         if (!this.data.reload) {
-          const bullet = new Circle({
+          const bulconst = new Circle({
             position: new Vector2(this.position.x, this.position.y),
             acceleration: new Vector2(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
             radius: 4,
@@ -242,17 +234,17 @@ const create = function () {
               }
             }
           });
-          this.scene.createEntity(bullet);
+          this.scene.createEntity(bulconst);
           this.data.reload = true;
           this.data.timeToReload = ticks;
 
           const arr = [parrot, box, circle, circle2, ellipse, rect];
 
-          for(let x of arr) {
-            this.scene.game.physics.setCollision(bullet, x, () => {
-              if(!bullet.data.colided) {
+          for(const x of arr) {
+            this.scene.game.physics.setCollision(bulconst, x, () => {
+              if(!bulconst.data.colided) {
                 x.data.hp -= 1;
-                bullet.data.colided = true;
+                bulconst.data.colided = true;
               }
             });
           }
@@ -283,7 +275,7 @@ const create = function () {
     },
   }));
 
-  let character = scene.createEntity(new Sprite({
+  const character = scene.createEntity(new Sprite({
     scene: scene,
     position: new Vector2(300, -100),
     angle: 0,
@@ -297,7 +289,7 @@ const create = function () {
     },
   }));
 
-  let walk = scene.createEntity(new Animation({
+  const walk = scene.createEntity(new Animation({
       changingValue: 'image',
       entity: character,
       values: [
@@ -320,7 +312,7 @@ const create = function () {
     })
   );
 
-  let camera = scene.createCamera(new Camera({
+  const camera = scene.createCamera(new Camera({
     ctx: game.ctx,
     position: new Vector2(0, 0),
     size: new Vector2(game.width, game.height),
@@ -342,7 +334,7 @@ const create = function () {
       const arr = [parrot, background, rect, box];
 
       const mouse = this.getMouseCoordinates();
-      for(let obj of arr){
+      for(const obj of arr){
         if(Rectangle.intersectPointWithoutAngle(obj.body, mouse)){
           this.scene.game.mouseObjects.push(obj);
         }
@@ -350,20 +342,20 @@ const create = function () {
     },
   }));
 
-  let hp1 = scene.createEntity(new HpBar({
+  const hp1 = scene.createEntity(new HpBar({
     parentEntity: character,
     color: '#fcd703',
   }));
 
-  let hp2 = scene.createEntity(new HpBar({
+  const hp2 = scene.createEntity(new HpBar({
     parentEntity: player,
   }));
 
-  let hp3 = scene.createEntity(new HpBar({
+  const hp3 = scene.createEntity(new HpBar({
     parentEntity: circle,
   }));
 
-  let hp4 = scene.createEntity(new HpBar({
+  const hp4 = scene.createEntity(new HpBar({
     parentEntity: circle2,
   }));
 
@@ -381,7 +373,6 @@ const game = new Game({
   alpha: true,
   imageSmoothingEnabled: false,
   backgroudColor: '#fff',
-  physics: null,
   preload: preload,
   create: create,
 });

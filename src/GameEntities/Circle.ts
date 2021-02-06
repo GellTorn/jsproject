@@ -23,7 +23,7 @@ export default class Circle extends Entity {
     this.color = config.color || '#000';
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.strokeStyle = this.color;
     ctx.fillStyle = this.color;
@@ -51,4 +51,4 @@ export default class Circle extends Entity {
   intersectPoint(point: Vector2): boolean {
     return this.position.distance(point) < this.radius;
   }
-};
+}
