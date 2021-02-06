@@ -22,12 +22,7 @@
   },
   "homepage": "https://github.com/GellTorn/jsproject#readme",
   "dependencies": {
-    "browserify": "^16.5.2",
-    "typescript": "^3.9.7",
-    "webpack": "^5.2.0"
+    "typescript": "^3.9.7"
   },
-  "devDependencies": {
-    "webpack-cli": "^4.1.0",
-    "webpack-dev-server": "^3.11.0"
-  }
+  "devDependencies": {}
 }
