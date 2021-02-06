@@ -353,6 +353,8 @@ const create = function () {
 
   const hp3 = scene.createEntity(new HpBar({
     parentEntity: circle,
+    color: '#6405b5',
+    backgroundColor: '#32104f'
   }));
 
   const hp4 = scene.createEntity(new HpBar({

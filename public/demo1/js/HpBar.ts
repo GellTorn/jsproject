@@ -5,6 +5,8 @@ export default class HpBar extends Entity {
     parentEntity: Entity;
   
     color: string;
+
+    backgroundColor: string;
   
     offset: Vector2;
   
@@ -22,6 +24,8 @@ export default class HpBar extends Entity {
       this.size = config.size || new Vector2(100, 10);
   
       this.color = config.color || 'red';
+
+      this.backgroundColor = config.backgroundColor || 'black';
     }
   
     draw(ctx: CanvasRenderingContext2D): void {
@@ -31,7 +35,7 @@ export default class HpBar extends Entity {
       const x = this.parentEntity.position.x - this.size.x / 2;
       const y = this.parentEntity.position.y + this.offset.y;
   
-      ctx.fillStyle = '#000';
+      ctx.fillStyle = this.backgroundColor;
       ctx.fillRect(x, y, this.size.x, this.size.y);
   
       ctx.fillStyle = this.color;
