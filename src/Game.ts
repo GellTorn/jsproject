@@ -7,7 +7,7 @@ import Entity from "./GameEntities/Entity";
 export default class Game {
   public GameEntities = GameEntities;
   /** холст */
-  public canvas;
+  public canvas: HTMLCanvasElement;
   /** версия продукта */
   public version: string;
   /** ширина холста */
@@ -62,7 +62,7 @@ export default class Game {
 
     this.ctx = this.canvas.getContext('2d', {
       alpha: config.alpha
-    });
+    }) as CanvasRenderingContext2D;
     /** сглаживание изображения, нужно отключить для пиксельных игр */
     this.ctx.imageSmoothingEnabled = config.imageSmoothingEnabled || false;
 
@@ -108,18 +108,6 @@ export default class Game {
     // событие на колесико
     window.addEventListener('wheel', this.onWheel.bind(this));
 
-    // событие focus/blur
-    // window.addEventListener('focus', this.onFocus.bind(this));
-    // window.addEventListener('blur', this.onBlur.bind(this));
-
-    // событие resize
-    // window.addEventListener('resize', ()=>{
-    //   this.width = window.innerWidth;
-    //   this.height = window.innerHeight;
-    //   this.canvas.width = this.width;
-    //   this.canvas.height = this.height;
-    // });
-
     // запускаем предзагрузку
     this.preload();
 
@@ -128,25 +116,25 @@ export default class Game {
 
   }
 
-  onMouseMove(event) {
+  onMouseMove(event: MouseEvent): void {
     this.mouse.set(event.offsetX, event.offsetY);
   }
 
-  onMouseClick(event) {
+  onMouseClick(event: MouseEvent): void {
     event.preventDefault();
   }
 
-  onContextMenu(event) {
+  onContextMenu(event: MouseEvent): void {
     event.preventDefault();
   }
 
-  onMouseDown(event) {
+  onMouseDown(event: MouseEvent): void {
     this.events.push('mouse' + event.button);
     this.mouse.set(event.offsetX, event.offsetY);
     event.preventDefault();
   }
 
-  onMouseUp(event) {
+  onMouseUp(event: MouseEvent): void {
     const index = this.events.indexOf('mouse' + event.button);
     if (index == -1) {
       return;
@@ -156,7 +144,7 @@ export default class Game {
     event.preventDefault();
   }
 
-  onKeyDown(event) {
+  onKeyDown(event: KeyboardEvent): void {
     if (event.repeat) {
       return;
     }
@@ -165,16 +153,16 @@ export default class Game {
     // event.preventDefault();
   }
 
-  onKeyUp(event) {
+  onKeyUp(event: KeyboardEvent): void {
     while (this.events.indexOf(event.code) != -1) {
-      let index = this.events.indexOf(event.code);
+      const index = this.events.indexOf(event.code);
       this.events.splice(index, 1);
     }
     //this.checkEventCode(event, this.events);
     event.preventDefault();
   }
 
-  onWheel(event) {
+  onWheel(event: WheelEvent): void {
     if (event.deltaY < 0) {
       this.events.push('up');
     }
@@ -183,46 +171,33 @@ export default class Game {
     }
   }
 
-  onFocus(event) {
+  onFocus(): void {
     this.scene.paused = false;
   }
 
-  onBlur(event) {
+  onBlur(): void {
     this.scene.paused = true;
   }
 
-  checkEventCode(event, events) {
-    // events.push(event.code);
-    // if(event.shiftKey) {
-    //     events.push('Shift');
-    // }
-    // if(event.altKey) {
-    //     events.push('Alt');
-    // }
-    // if(event.ctrlKey) {
-    //     events.push('Control');
-    // }
-  }
-
-  setScene(sceneId) {
+  setScene(sceneId: number): Game {
     this.scene = this.scenes[sceneId];
     return this;
   }
 
-  createScene(sceneId, config = {}) {
-    let scene = new Scene(config);
+  createScene(sceneId: number, config = {}): Scene {
+    const scene = new Scene(config);
     scene.game = this;
     this.scenes[sceneId] = scene;
     return scene;
   }
 
-  check() {
+  check(): void {
     this.fps = this.frameAmount;
     this.frameAmount = 0;
   }
 
-  loadImage(resourceId: string, source: string) {
-    let image = new Image();
+  loadImage(resourceId: string, source: string): Game {
+    const image = new Image();
     this.resources[resourceId] = {
       resource: image,
       loaded: false,
@@ -236,8 +211,8 @@ export default class Game {
     return this;
   }
 
-  loadVideo(resourceId: string, source: string) {
-    let video = document.createElement('video');
+  loadVideo(resourceId: string, source: string): Game {
+    const video = document.createElement('video');
     video.muted = true;
     video.loop = true;
 
@@ -255,14 +230,14 @@ export default class Game {
     return this;
   }
 
-  getResource(resourceId: string) {
+  getResource(resourceId: string): HTMLImageElement | any {
     return this.resources[resourceId].resource;
   }
 
-  _preloadDone() {
-    for(let resource in this.resources) {
+  _preloadDone(): boolean {
+    for(const resource in this.resources) {
       if (!this.resources[resource].loaded) {
-        console.log('not ready');
+        console.log('Not ready');
         return false;
       }
     }
@@ -270,14 +245,16 @@ export default class Game {
     
     this.create();
 
-    console.info(`Game engine v${this.version}`);
+    console.info(`Game engine started`);
     // запускаем отрисовку
     window.requestAnimationFrame(this.update.bind(this));
 
     this._setFps = setInterval(this.check.bind(this), 1000);
+
+    return true;
   }
 
-  update() {
+  update(): void {
     // назначена ли сцена
     if (this.scene == null) {
       return;
@@ -303,7 +280,7 @@ export default class Game {
       this.physics.update(this.scene.time, this.scene.timeTick);
 
       // обновляем все игровые объекты
-      for (let obj of this.scene.updateList) {
+      for (const obj of this.scene.updateList) {
         obj.update(this.scene.time, this.scene.timeTick);
       }
 
@@ -337,7 +314,7 @@ export default class Game {
       this.ctx.fillText(`mouseObjects: ${this.mouseObjects.map((item) => item.name)}`, 2, 50);
       this.ctx.fillText(`time: ${(this.scene.time / 1000).toFixed(1)} s`, 2, 20);
       let offsetX = 60;
-      for (let obj of this.scene.objects) {
+      for (const obj of this.scene.objects) {
         if(!obj.position) {
           continue;
         }
@@ -350,10 +327,10 @@ export default class Game {
     this.frameAmount++;
 
     // обновляем события
-    let delEvents = ['up', 'down'];
-    for (let x of delEvents) {
+    const delEvents = ['up', 'down'];
+    for (const x of delEvents) {
       while (this.events.indexOf(x) != -1) {
-        let ind = this.events.indexOf(x);
+        const ind = this.events.indexOf(x);
         this.events.splice(ind, 1);
       }
     }

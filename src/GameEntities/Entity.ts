@@ -1,9 +1,10 @@
+import Drawable from "../interfaces/Drawable";
 import Scene from "../Scene";
 import Vector2 from "../Vector2";
 import Camera from "./Camera";
 import Rectangle from "./Rectangle";
 
-export default class Entity {
+export default class Entity implements Drawable {
   /** ссылка на сцену которой пренадлежит сущность */
   public scene: Scene;
   /** позиция */
@@ -102,7 +103,7 @@ export default class Entity {
   }
 
   // функции для создания: draw, update, offscreen
-  draw(ctx): void {
+  draw(ctx: CanvasRenderingContext2D): void {
 
   }
 

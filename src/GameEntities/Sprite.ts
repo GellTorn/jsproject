@@ -23,7 +23,7 @@ export default class Sprite extends Rectangle {
     }
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D): void {
     ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height,
       -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
   }
@@ -33,4 +33,4 @@ export default class Sprite extends Rectangle {
     this.image = this.scene.game.getResource(imageId);
     return this;
   }
-};
+}
