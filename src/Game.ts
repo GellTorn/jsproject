@@ -1,10 +1,11 @@
 import Scene from "./Scene";
-import Physics from "./Physics";
+import Physics from "./Physics/Physics";
 import Vector2 from "./Vector2";
-import GameObjects from './GameEntities/index';
+import GameEntities from './GameEntities/index';
+import Entity from "./GameEntities/Entity";
 
 export default class Game {
-  public GameObjects = GameObjects;
+  public GameEntities = GameEntities;
   /** холст */
   public canvas;
   /** версия продукта */
@@ -50,8 +51,6 @@ export default class Game {
   constructor(config: any = {}) {
     
     this.canvas = config.canvas || null;
-
-    this.version = '0.0.1';
 
     this.width = config.width || 600;
 

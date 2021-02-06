@@ -93,7 +93,7 @@ export default class Scene {
     this._paused = value;
   }
 
-  get paused() {
+  get paused(): boolean {
     return this._paused;
   }
 }

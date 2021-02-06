@@ -26,7 +26,7 @@ export default class Text extends Rectangle {
     this.font = config.font || `${ this.size.y }px sans-serif`;
   }
 
-  draw(ctx) {
+  draw(ctx): void {
     ctx.save();
     ctx.fillStyle = this.color;
     ctx.textAlign = 'left';
@@ -43,4 +43,4 @@ export default class Text extends Rectangle {
 
     ctx.restore();
   }
-};
+}

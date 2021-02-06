@@ -1,14 +1,9 @@
-import Game from './Game';
-import Entity from './GameEntities/Entity';
-import Circle from './GameEntities/Circle';
-import Rectangle from './GameEntities/Rectangle';
-import Vector2 from './Vector2';
-
-interface Collision {
-  bodyA: Entity | Rectangle | Circle,
-  bodyB: Entity | Rectangle | Circle,
-  callback: () => void,
-}
+import Game from '../Game';
+import Entity from '../GameEntities/Entity';
+import Circle from '../GameEntities/Circle';
+import Rectangle from '../GameEntities/Rectangle';
+import Vector2 from '../Vector2';
+import Collision from './Collision';
 
 export default class Physics {
   /** ссылка на объект игры */
@@ -25,7 +20,7 @@ export default class Physics {
     this.collisions = [];
   }
 
-  setCollision(bodyA: Entity, bodyB: Entity, callback: () => void) {
+  setCollision(bodyA: Entity, bodyB: Entity, callback: () => void): Collision {
     const collision = {
       bodyA,
       bodyB,
@@ -35,7 +30,7 @@ export default class Physics {
     return collision;
   }
 
-  checkCollision(collision: Collision) {
+  checkCollision(collision: Collision): void {
     // Circle x Circle
     if(collision.bodyA instanceof Circle && collision.bodyB instanceof Circle) {
       if(collision.bodyA.intersectCircle(collision.bodyB)){
@@ -66,13 +61,13 @@ export default class Physics {
     }
   }
 
-  update(time: number, ticks: number) {
-    for (let obj of this.game.scene.objects) {
+  update(time: number, ticks: number): void {
+    for (const obj of this.game.scene.objects) {
       if (!obj.physics) {
         continue;
       }
 
-      let friction = 0.95;
+      const friction = 0.95;
 
       obj.velocity.x *= friction;
       obj.velocity.y *= friction;
@@ -94,7 +89,7 @@ export default class Physics {
       return true;
     });
 
-    for (let collision of this.collisions) {
+    for (const collision of this.collisions) {
       this.checkCollision(collision);
     }
   }

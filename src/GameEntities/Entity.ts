@@ -86,7 +86,7 @@ export default class Entity {
     return this.angle + this.parent.angle;
   }
 
-  set angle(value) {
+  set angle(value: number) {
     const max = Math.PI * 2;
     if (value > max) {
       value -= max;
@@ -97,12 +97,12 @@ export default class Entity {
     this._angle = Math.round(value * 1000) / 1000;
   }
 
-  get angle() {
+  get angle(): number {
     return this._angle;
   }
 
   // функции для создания: draw, update, offscreen
-  draw(ctx) {
+  draw(ctx): void {
 
   }
 

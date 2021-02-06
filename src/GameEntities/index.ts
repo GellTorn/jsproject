@@ -6,7 +6,7 @@ import Ellipse from "./Ellipse";
 import Sprite from "./Sprite";
 import Text from "./Text";
 
-const GameObjects = {
+const GameEntities = {
   Entity,
   Camera,
   Circle,
@@ -16,4 +16,4 @@ const GameObjects = {
   Text
 };
 
-export default GameObjects;
+export default GameEntities;

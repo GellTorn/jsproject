@@ -3,7 +3,7 @@ import Camera from "../../../src/GameEntities/Camera";
 import Scene from "../../../src/Scene";
 import Entity from "../../../src/GameEntities/Entity";
 import Rectangle from "../../../src/GameEntities/Rectangle";
-import Physics from "../../../src/Physics";
+import Physics from "../../../src/Physics/Physics";
 import Ellipse from "../../../src/GameEntities/Ellipse";
 import Sprite from "../../../src/GameEntities/Sprite";
 import Text from "../../../src/GameEntities/Text";
