@@ -264,12 +264,7 @@ export default class Game {
       this.scene.timeTick++;
 
       // удаляем объекты помеченные на удаление
-      this.scene.objects = this.scene.objects.filter((obj) => {
-        if (!obj.delete) {
-          return true;
-        }
-        return false;
-      });
+      this.scene.objects = this.scene.objects.filter((obj) => !obj.delete);
 
       // создаем лист объектов на обновление
       this.scene.createUpdateList();
@@ -303,7 +298,7 @@ export default class Game {
     // информация для дебага
     if (this.debug) {
       this.ctx.textAlign = 'left';
-      this.ctx.font = '8px';
+      this.ctx.font = '20px';
       this.ctx.fillStyle = '#000';
       this.ctx.fillText(`${this.fps} fps`, 2, 10);
       this.ctx.fillText(`camera(${this.scene.cameras[0].position.x}, ${this.scene.cameras[0].position.y}, ${this.scene.cameras[0].zoom})`, 2, 30);

@@ -10,7 +10,7 @@ export default class HpBar extends Entity {
   
     size: Vector2;
   
-    name: 'HP bar';
+    name = 'HP bar';
   
     constructor(config: any = {}) {
       super(config);

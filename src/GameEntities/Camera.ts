@@ -64,8 +64,10 @@ export default class Camera extends Rectangle {
       // if (obj.offscreen(this)) {
       //   this.displayList.push(obj);
       // }
-      if(!obj.body)
+      if(!obj.body) {
         obj.body = new Rectangle();
+      }
+        
       obj.body.position = obj.position;
       if (Rectangle.intersectAABB(this, obj.body)) {
         this.displayList.push(obj);

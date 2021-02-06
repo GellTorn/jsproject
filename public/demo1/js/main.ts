@@ -118,7 +118,7 @@ const create = function () {
     },
     update(time, ticks) {
       if(this.data.hp <= 0) {
-        this.deconste = true;
+        this.delete = true;
       }
 
       if (this.data.grow) {
@@ -149,7 +149,7 @@ const create = function () {
     },
     update(time, ticks) {
       if(this.data.hp <= 0) {
-        this.deconste = true;
+        this.delete = true;
       }
 
       const x0 = 500;
@@ -214,7 +214,7 @@ const create = function () {
           this.data.reload = false;
         }
         if (!this.data.reload) {
-          const bulconst = new Circle({
+          const bullet = new Circle({
             position: new Vector2(this.position.x, this.position.y),
             acceleration: new Vector2(Math.cos(this.angle) * 50, Math.sin(this.angle) * 50),
             radius: 4,
@@ -234,17 +234,17 @@ const create = function () {
               }
             }
           });
-          this.scene.createEntity(bulconst);
+          this.scene.createEntity(bullet);
           this.data.reload = true;
           this.data.timeToReload = ticks;
 
           const arr = [parrot, box, circle, circle2, ellipse, rect];
 
           for(const x of arr) {
-            this.scene.game.physics.setCollision(bulconst, x, () => {
-              if(!bulconst.data.colided) {
+            this.scene.game.physics.setCollision(bullet, x, () => {
+              if(!bullet.data.colided) {
                 x.data.hp -= 1;
-                bulconst.data.colided = true;
+                bullet.data.colided = true;
               }
             });
           }

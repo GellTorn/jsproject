@@ -70,7 +70,7 @@ export default class Scene {
     return entity;
   }
 
-  createUpdateList(): Scene {
+  createUpdateList(): this {
     this.updateList = [];
     for (const obj of this.objects) {
       if (obj.active) {
