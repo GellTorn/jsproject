@@ -13,13 +13,13 @@ import Animation from "../../../src/Animation";
 import HpBar from "./HpBar";
 
 const preload = function () {
-  this.loadImage('rect', '../demo1/image/rect.png');
-  this.loadImage('box', '../demo1/image/box.png');
-  this.loadImage('ball', '../demo1/image/ball.png');
-  this.loadImage('parrot', '../demo1/image/parrot.gif');
-  this.loadImage('idle', '../demo1/image/сhar_idle.png');
-  this.loadImage('walk1', '../demo1/image/сhar_walk1.png');
-  this.loadImage('walk2', '../demo1/image/сhar_walk2.png');
+  this.loadImage('rect', '../image/rect.png');
+  this.loadImage('box', '../image/box.png');
+  this.loadImage('ball', '../image/ball.png');
+  this.loadImage('parrot', '../image/parrot.gif');
+  this.loadImage('idle', '../image/сhar_idle.png');
+  this.loadImage('walk1', '../image/сhar_walk1.png');
+  this.loadImage('walk2', '../image/сhar_walk2.png');
 }
 
 const create = function () {
