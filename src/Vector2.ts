@@ -5,7 +5,7 @@ export default class Vector2 {
 
   public y: number;
 
-  constructor(x: number = 0, y: number = 0) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
@@ -24,7 +24,7 @@ export default class Vector2 {
     return this;
   }
   /** Sets the `x` and `y` values of this object from a given polar coordinate. */
-  setToPolar(azimuth: number, radius: number = 1): Vector2 {
+  setToPolar(azimuth: number, radius = 1): Vector2 {
     this.x = Math.cos(azimuth) * radius;
     this.y = Math.sin(azimuth) * radius;
     return this;
@@ -165,7 +165,7 @@ export default class Vector2 {
    * Interpolates this Vector towards the given Vector. 
    * The interpolation percentage, between 0 and 1.
    */
-  lerp(src: Vector2, t: number = 0): Vector2{
+  lerp(src: Vector2, t = 0): Vector2{
     const ax = this.x;
     const ay = this.y;
 
@@ -212,7 +212,7 @@ export default class Vector2 {
     return this.set(cos * this.x - sin * this.y, sin * this.x + cos * this.y);
   }
 
-  toPolar() {
+  toPolar(): { p: number, q: number } {
     return {
       p: Math.sqrt(this.x * this.x + this.y * this.y),
       q: Math.atan2(this.y, this.x),

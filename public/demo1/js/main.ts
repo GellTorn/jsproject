@@ -25,10 +25,6 @@ const preload = function () {
 const create = function () {
   let scene = this.createScene('start');
 
-  scene.update = (time, ticks) => {
-
-  };
-
   let background = scene.createEntity(new Rectangle({
     scene: scene,
     position: new Vector2(0, 0),
