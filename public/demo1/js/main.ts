@@ -327,18 +327,6 @@ const create = function () {
       if (this.scene.game.events.includes('down')) {
         this.zoom *= 1 / 1.1;
       }
-
-      // добаляем объекты на которые наведена мышь
-      this.scene.game.mouseObjects = [];
-
-      const arr = [parrot, background, rect, box];
-
-      const mouse = this.getMouseCoordinates();
-      // for(const obj of arr){
-      //   if(Rectangle.intersectPointWithoutAngle(obj.body, mouse)){
-      //     this.scene.game.mouseObjects.push(obj);
-      //   }
-      // }
     },
   }));
 
